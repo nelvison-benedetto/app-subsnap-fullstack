@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/SubSnap.API/SubSnap.API.csproj" />
+    <Project Path="backend/src/SubSnap.Core/SubSnap.Core.csproj" />
+    <Project Path="backend/src/SubSnap.Infrastructure/SubSnap.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/frontend/" />
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+</Solution>
