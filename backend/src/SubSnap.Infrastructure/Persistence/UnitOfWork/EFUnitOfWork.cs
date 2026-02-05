@@ -17,6 +17,6 @@ public sealed class EFUnitOfWork : IUnitOfWork
         _context = context;
     }
 
-    public Task SaveChangesAsync(CancellationToken ct = default)
+    public async Task SaveChangesAsync(CancellationToken ct = default)
         => _context.SaveChangesAsync(ct);
 }

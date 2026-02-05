@@ -26,7 +26,7 @@ public static class UserMapper   //è static
     public static Infrastructure.Persistence.Scaffold.User ToEntity(Core.Domain.Entities.User domain)
         => new()
         {
-            UserId = domain.Id.Value,
+            UserId = domain.Id?.Value ?? 0,
             Email = domain.Email.Value,
             PasswordHash = domain.PasswordHash.Value,
             CreatedAt = domain.CreatedAt,

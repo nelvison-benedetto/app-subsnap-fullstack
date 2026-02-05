@@ -36,19 +36,19 @@ public class UserService : IUserService
 
         // 2️ Creo il domain object
         var user = new User(
-            new UserId(0),   //EF genererà l'ID se è identity sul db!
-            new Email(command.Email),
-            new PasswordHash(command.Password),
-            DateTime.UtcNow,
-            DateTime.UtcNow,
-            null
+            id: null,    //new UserId(0),   //EF genererà l'ID se è identity sul db!
+            email: new Email(command.Email),
+            passwordHash: new PasswordHash(command.Password),
+            createdAt: DateTime.UtcNow,
+            updatedAt: DateTime.UtcNow,
+            lastLogin: null
         );
 
         // 3️ Aggiungo al repository
         await _userRepository.AddAsync(user);
 
         // 4️ Commit tramite UnitOfWork
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();  //commit
 
         // 5️ Mapping a Result
         return new UserResult( 

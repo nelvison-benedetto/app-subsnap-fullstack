@@ -12,12 +12,12 @@ namespace SubSnap.Core.Contracts.Repositories;
 public interface IUserRepository
 {
     //entity singola
-    Task<User?> GetByIdAsync(UserId id);
+    Task<User?> GetByIdAsync(UserId id);  //validazione tramite type UserId
     Task<User?> GetByEmailAsync(Email email);
 
-    //aggregates
+    //AGGREGATES
     Task<UserAggregate?> GetAggregateAsync(UserId id);
 
-    //commands
+    //COMMANDS
     Task AddAsync(User user);
 }
