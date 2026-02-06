@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 namespace SubSnap.Core.Domain.Entities;
 
 //user domain semplice (no ICollection no EF no navigation props), w no list of SharedLink e Subscription 
+//rappresentare concetti di business, contenere logica (es. ChangeEmail, Login()), essere indipendente da EF, SQL, Docker, VPS
 public class User
 {
-    public UserId? Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
-        //nullable. verrà creato da DB
+    public UserId? Id { get; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
+        //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
     public Email Email { get; private set; }   //type other obj  (readonly struct)(./ValueObjects/)
         //private set; perche in futuro voglio poterlo cambiare here only w e.g. method ChangeEmail()
     public PasswordHash PasswordHash { get; private set; }   //type other obj  (readonly struct)(./ValueObjects/)
@@ -23,7 +24,7 @@ public class User
     protected User() { }  //constructor!! x ORM only
 
     public User(   //constructor
-        UserId? id,
+        UserId? id,  //nullable
         Email email,
         PasswordHash passwordHash,
         DateTime createdAt,
@@ -39,13 +40,13 @@ public class User
     }
 
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj
-    //    //internal, solo .Infrastructure(stesso prj, assembly) puo usarlo!
+    //     //internal, solo .Infrastructure(stesso prj, assembly) puo usarlo!
     //{
     //    if (Id != null)
     //        throw new InvalidOperationException("Id already set");
     //    Id = id;
-    //utilizza anche file .Core/AssemblyInfo.cs 
-    //}  //SOLUZIONE ESTREMA PURISSIMA DDD, ma overkill!!!
+    //    //utilizza anche file.Core / AssemblyInfo.cs
+    //}
 
     public void UpdateLastLogin(DateTime now)
     {

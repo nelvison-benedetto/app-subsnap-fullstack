@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Infrastructure.Mapping;
 
-//cuore del ponte tra Domain e Persistence (.core/entities <==> .infrastructure/persistence/scaffold (quelli che scarico dal db))
+//cuore del ponte tra Domain e Persistence (.core/domain/entities <==> .infrastructure/persistence/scaffold (quelli che scarico dal db))
+//Domain entities(core/domain/entitites/...), Persistence entitites(scaffold/...)
 public static class UserMapper   //è static
 {
     // DB -> Domain
@@ -26,7 +27,7 @@ public static class UserMapper   //è static
     public static Infrastructure.Persistence.Scaffold.User ToEntity(Core.Domain.Entities.User domain)
         => new()
         {
-            UserId = domain.Id?.Value ?? 0,
+            //UserId = domain.Id?.Value ?? 0,  NON PASSIAMO NIENTE! XK lo genera il db
             Email = domain.Email.Value,
             PasswordHash = domain.PasswordHash.Value,
             CreatedAt = domain.CreatedAt,

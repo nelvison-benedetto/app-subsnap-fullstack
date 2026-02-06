@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace SubSnap.Infrastructure.Repositories.Implementations;
 
 //repository = composizione query
-//here NO savechangesasync, because it's done in unit of work
+//here NO savechangesasync !!, because it's done in unit of work!!
 
 public class UserRepository : IUserRepository
 {
@@ -54,11 +54,25 @@ public class UserRepository : IUserRepository
     }
 
     //COMMANDS
-    public async Task AddAsync(User user)  //Repository + SaveChanges (DDD puro)
+    public Task AddAsync(User user)  //Repository + SaveChanges (DDD puro)
     {
-        _context.User.Add(UserMapper.ToEntity(user));
-        //return Task.CompletedTask;
-
+        //var entity = UserMapper.ToEntity(user);
+        //_context.User.Add(entity);
+        //await _context.SaveChangesAsync();
+        ////user.Id = new UserId(entity.UserId); //domain aggiornato, da fare DOPO il savechanges!!
+        //return new User(  //ritorno new w id
+        //    new UserId(entity.UserId),
+        //    user.Email,
+        //    user.PasswordHash,
+        //    user.CreatedAt,
+        //    user.UpdatedAt,
+        //    user.LastLogin
+        //);
+        var entity = UserMapper.ToEntity(user);
+        _context.User.Add(entity);
+        // ❗ NON SaveChanges qui
+        // l'ID verrà valorizzato DOPO dal UnitOfWork!!
+        return Task.CompletedTask;
     }
 
 }

@@ -34,7 +34,7 @@ public class UserService : IUserService
         if (existing != null)
             throw new EmailAlreadyRegisteredException(command.Email);
 
-        // 2️ Creo il domain object
+        // 2️ Creo il domain entity
         var user = new User(
             id: null,    //new UserId(0),   //EF genererà l'ID se è identity sul db!
             email: new Email(command.Email),
@@ -44,16 +44,19 @@ public class UserService : IUserService
             lastLogin: null
         );
 
-        // 3️ Aggiungo al repository
-        await _userRepository.AddAsync(user);
+        await _userRepository.AddAsync(user);  // 2. Aggiungo al repository (senza SaveChanges!)
+        await _unitOfWork.SaveChangesAsync();  // 3. Commit tramite UnitOfWork
 
-        // 4️ Commit tramite UnitOfWork
-        await _unitOfWork.SaveChangesAsync();  //commit
+        //ora hai 2 opzioni per ottenere l'id della nuova row aggiunta su db:
+        //1.   ricarichi dal DB (DDD pulito e sicuro!), ma ti costa un'ulteriore query, ma ok
+        var saved = await _userRepository.GetByEmailAsync(user.Email);
+        //2.   un po piu violento sul DDD e puo essere overkill, ma eviti di fare nuova query
+        //user.SetId(new UserId(entity.UserId)); // entity = EF tracked entity che ora ha l'ID
 
-        // 5️ Mapping a Result
-        return new UserResult( 
-            user.Id.Value,
+        return new UserResult(
+            user!.Id!.Value.Value,
             user.Email.Value
-        );  //uso il constct del record UserResult
+        );
+
     }
 }
