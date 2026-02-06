@@ -31,17 +31,17 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);  //tieni solo plugin A
 
 // Infrastructure
 builder.Services.AddInfrastructure(builder.Configuration);
+    //qua accade DbContext, repositories concreti, unit of work, connection str
 
-var app = builder.Build();
+var app = builder.Build();  //crei l'istanza finale dell'app. ora elenchi i middlewares (http chain)
 
 // Middleware pipeline
 app.UseSwaggerConfiguration();
 app.UseCorsConfiguration();
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); //legge JWT dal header, valida token, popola HttpContext.User
+app.UseAuthorization();  //applica [Authorize]
 app.UseHealthChecksConfiguration();
 
-app.MapControllers();
+app.MapControllers();  //collega routing -> controller
 app.Run();
-
