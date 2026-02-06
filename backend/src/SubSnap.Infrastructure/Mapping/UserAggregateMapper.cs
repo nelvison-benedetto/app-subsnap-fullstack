@@ -17,4 +17,5 @@ public static class UserAggregateMapper
             entity.SharedLink.Select(SharedLinkMapper.ToDomain)
         );
     }
+
 }

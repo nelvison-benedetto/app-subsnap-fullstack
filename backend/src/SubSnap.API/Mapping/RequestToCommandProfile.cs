@@ -4,10 +4,14 @@ using SubSnap.Core.DTOs.External.Requests.Users;
 
 namespace SubSnap.API.Mapping;
 
-public sealed class RequestToCommandProfile : Profile
+public sealed class RequestToCommandProfile : Profile  //Profile è classe di AutoMapper che contiene tutte le regole di mapping 
 {
     public RequestToCommandProfile()
     {
+        //CreateMap<From, To>()
         CreateMap<RegisterUserRequest, RegisterUserCommand>();
     }
+    //e nel controller puoi fare e.g. var command = _mapper.Map<RegisterUserCommand>(request); (request è di type RegisterUserRequest)
+    //ora puoi passare il 'command' pulito nei tuoi services
+
 }

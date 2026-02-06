@@ -13,15 +13,14 @@ namespace SubSnap.Infrastructure.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructure(
+    public static IServiceCollection AddInfrastructure(  // custom extension x IServiceCollection (la collezione di servizi della DI di ASP.NET Core)
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(
-                configuration.GetConnectionString("sqlConnection")));
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer( configuration.GetConnectionString("sqlConnection")));
 
-        //importanti!!!
+        //registrazione dei repositories!!
+        //quando qualcuno chiede IUserRepository, la DI darà un’istanza concreta di UserRepository
         services.AddScoped<IUserRepository, UserRepository>();  //!!!repositories
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();     //!!!unit of work
         services.AddScoped<IUserService, UserService>();     //!!!application services
