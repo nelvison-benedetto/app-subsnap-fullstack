@@ -6,6 +6,10 @@ using SubSnap.Core.Domain.Exceptions;
 
 namespace SubSnap.API.Middleware.ExceptionHandling;
 
+//Cattura tutte le eccezioni non gestite nella pipeline, mappa eccezioni di dominio o validation → 400, mappa altre eccezioni → 500. Restituisce sempre ApiResult.Fail al client.
+
+//lo chiami w  app.UseGlobalExceptionHandler(); in program.cs o un extension starter.
+
 public static class ExceptionMiddlewareExtensions
 {
     public static void UseGlobalExceptionHandler(this WebApplication app)

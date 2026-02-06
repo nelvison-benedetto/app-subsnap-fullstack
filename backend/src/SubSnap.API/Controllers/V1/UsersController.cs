@@ -28,13 +28,13 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
-    [ProducesResponseType(typeof(ApiResult<UserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResult<UserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ApiResult<UserResponse>>> Register(
         RegisterUserRequest request)
     {
-        // Request -> Command
+        // Request -> Command mapping
         var command = _mapper.Map<RegisterUserCommand>(request);
 
         // Validazione centralizzata
@@ -47,6 +47,21 @@ public class UsersController : ControllerBase
         var response = _mapper.Map<UserResponse>(result);
 
         return Ok(ApiResult<UserResponse>.Ok(response));
+        //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
+        //ApiResult<T>.Ok(data)  my custom envelope standard per tutte le risposte
     }
-    
+    /*
+     Client -> HTTP Request -> DTO esterno (RegisterUserRequest)
+      -> AutoMapper -> Command applicativo (RegisterUserCommand)
+      -> Middleware valida Command (FluentValidation)
+          -> Se fallisce: ApiResult.Fail 400
+      -> Controller chiama Service
+          -> Service orchestration
+              -> Domain logic, Repositories
+          -> Restituisce Result (UserResult)
+      -> AutoMapper -> Response DTO (UserResponse)
+      -> Envelope ApiResult.Ok
+      -> JSON Response
+     */
+
 }
