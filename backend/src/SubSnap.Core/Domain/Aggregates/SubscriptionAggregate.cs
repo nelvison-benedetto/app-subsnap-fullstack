@@ -21,5 +21,5 @@ public sealed class SubscriptionAggregate
         History = history?.ToList().AsReadOnly()
             ?? throw new ArgumentNullException(nameof(history));
     }
-    //SubscriptionHistory vive solo qui, non da sola
+    //SubscriptionHistory vive solo qui, non da sola!
 }

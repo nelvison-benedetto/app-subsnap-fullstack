@@ -9,7 +9,7 @@ namespace SubSnap.Core.Domain.Entities;
 
 public class Subscription
 {
-    public SubscriptionId Id { get; }
+    public SubscriptionId? Id { get; }
     public string Name { get; private set; }
     public decimal Amount { get; private set; }
     public string BillingCycle { get; private set; }
@@ -20,7 +20,7 @@ public class Subscription
     protected Subscription() { }  //constructor!!
 
     public Subscription(
-        SubscriptionId id,
+        SubscriptionId? id,
         string name,
         decimal amount,
         string billingCycle,

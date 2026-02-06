@@ -20,9 +20,42 @@ public sealed class UserAggregate
         IEnumerable<SharedLink> sharedLinks)
     {
         User = user ?? throw new ArgumentNullException(nameof(user));
-        Subscriptions = subscriptions?.ToList().AsReadOnly()
+        Subscriptions = subscriptions?.ToList().AsReadOnly() //Espone ReadOnly (sicuro)
             ?? throw new ArgumentNullException(nameof(subscriptions));
         SharedLinks = sharedLinks?.ToList().AsReadOnly()
             ?? throw new ArgumentNullException(nameof(sharedLinks));
     }
+    
 }
+/*
+esempio di come fai ad ottenere i dati aggregati correttamente
+//cmnq caricare user+tutti i suoi dati collegati si usa il 20% delle volte, la maggiorparte delle volte ti serve solo ottenere l'User senza i suoi dati collegati.
+ nel repository
+public async Task<UserAggregate?> GetAggregateAsync(UserId id)
+{
+    var entity = await _context.User
+        .Include(u => u.Subscription)
+        .Include(u => u.SharedLink)
+        .AsNoTracking()
+        .FirstOrDefaultAsync(u => u.UserId == id.Value);
+
+    return entity is null
+        ? null
+        : UserAggregateMapper.ToDomain(entity);
+}
+nel service
+public async Task<UserDashboardResult> GetDashboardAsync(UserId userId)
+{
+    var aggregate = await _userRepository.GetAggregateAsync(userId);
+
+    if (aggregate is null)
+        throw new UserNotFoundException(userId.Value);
+
+    // ora hai tutto il grafo coerente
+    return new UserDashboardResult(
+        aggregate.User.Email.Value,
+        aggregate.Subscriptions.Count,
+        aggregate.Subscriptions.Sum(s => s.Amount)
+    );
+}
+ */

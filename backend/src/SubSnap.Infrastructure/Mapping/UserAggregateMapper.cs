@@ -11,7 +11,7 @@ public static class UserAggregateMapper
 {
     public static UserAggregate ToDomain(Infrastructure.Persistence.Scaffold.User entity)
     {
-        return new UserAggregate(
+        return new UserAggregate(  //il type(here utilizzo le rules e validations)
             UserMapper.ToDomain(entity),
             entity.Subscription.Select(SubscriptionMapper.ToDomain),
             entity.SharedLink.Select(SharedLinkMapper.ToDomain)
