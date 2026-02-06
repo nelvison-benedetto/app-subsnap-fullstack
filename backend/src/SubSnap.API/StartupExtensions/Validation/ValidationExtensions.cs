@@ -15,7 +15,7 @@ public static class ValidationExtensions
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        // FluentValidation - Registra tutti i validator dell'assembly API
+        //FluentValidation - Registra tutti i validator dell'assembly API
         services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
 
         return services;

@@ -12,7 +12,8 @@ public static class AuthorizationExtensions
                 policy.RequireAuthenticatedUser();
             });
         });
-
         return services;
     }
+
+    //e poi la usi cosi  [Authorize(Policy = "UserOnly")]
 }

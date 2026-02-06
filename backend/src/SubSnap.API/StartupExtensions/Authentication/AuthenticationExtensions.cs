@@ -36,7 +36,6 @@ public static class AuthenticationExtensions
                         Encoding.UTF8.GetBytes(secretKey))
                 };
             });
-
         return services;
     }
 }

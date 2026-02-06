@@ -1,6 +1,6 @@
 ﻿namespace SubSnap.API.StartupExtensions.HealthChecks;
 
-//perfetto per Docker / K8s, zero coupling
+//utile x per Docker,K8s,Load Balancer,Azure,AWS,ect.. zero coupling
 public static class HealthChecksExtensions
 {
     public static IServiceCollection AddHealthChecksConfiguration(

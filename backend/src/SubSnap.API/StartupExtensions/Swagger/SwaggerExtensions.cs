@@ -2,10 +2,9 @@
 
 namespace SubSnap.API.StartupExtensions.Swagger;
 
-public static class SwaggerExtensions
+public static class SwaggerExtensions  //x documentazione, no logica
 {
-    public static IServiceCollection AddSwaggerConfiguration(
-        this IServiceCollection services)
+    public static IServiceCollection AddSwaggerConfiguration( this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
@@ -17,18 +16,15 @@ public static class SwaggerExtensions
                 Description = "Subscription management API"
             });
         });
-
         return services;
     }
-    public static IApplicationBuilder UseSwaggerConfiguration(
-        this IApplicationBuilder app)
+    public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app)
     {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "SubSnap API v1");
         });
-
         return app;
     }
 }
