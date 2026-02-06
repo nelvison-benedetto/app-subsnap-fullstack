@@ -6,9 +6,11 @@ using SubSnap.Core.Domain.Exceptions;
 
 namespace SubSnap.API.Middleware.ExceptionHandling;
 
-//Cattura tutte le eccezioni non gestite nella pipeline, mappa eccezioni di dominio o validation → 400, mappa altre eccezioni → 500. Restituisce sempre ApiResult.Fail al client.
+//Cattura tutte le eccezioni NON GESTITE NELLA PIPELINE, mappa eccezioni di dominio o validation → 400, mappa altre eccezioni → 500. Restituisce sempre ApiResult.Fail al client.
 
 //lo chiami w  app.UseGlobalExceptionHandler(); in program.cs o un extension starter.
+
+//Se il service lancia EmailAlreadyRegisteredException, il middleware (ExceptionMiddlewareExtensions.cs) lo cattura come DomainException!! e restituisce 400 con il messaggio che hai definito in EmailAlreadyRegisteredException
 
 public static class ExceptionMiddlewareExtensions
 {
@@ -24,7 +26,7 @@ public static class ExceptionMiddlewareExtensions
                 if (exception is null) return;
                 var (statusCode, message) = exception switch
                 {
-                    DomainException => (
+                    DomainException => (  //my custom!!
                         StatusCodes.Status400BadRequest,
                         exception.Message
                     ),
