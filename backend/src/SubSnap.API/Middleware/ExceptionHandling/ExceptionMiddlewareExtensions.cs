@@ -11,7 +11,17 @@ namespace SubSnap.API.Middleware.ExceptionHandling;
 //lo chiami w  app.UseGlobalExceptionHandler(); in program.cs o un extension starter.
 
 //Se il service lancia EmailAlreadyRegisteredException, il middleware (ExceptionMiddlewareExtensions.cs) lo cattura come DomainException!! e restituisce 400 con il messaggio che hai definito in EmailAlreadyRegisteredException
-
+//analogamente se il service lancia UserNotFoundException (lo lanci tu), il client riceverà:
+/*
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "statusCode": 404,
+    "message": "User with id 42 was not found."
+  }
+}
+ */
 public static class ExceptionMiddlewareExtensions
 {
     public static void UseGlobalExceptionHandler(this WebApplication app)
@@ -26,18 +36,13 @@ public static class ExceptionMiddlewareExtensions
                 if (exception is null) return;
                 var (statusCode, message) = exception switch
                 {
+                    NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
                     DomainException => (  //my custom!!
                         StatusCodes.Status400BadRequest,
                         exception.Message
                     ),
-                    ValidationException => (
-                        StatusCodes.Status400BadRequest,
-                        exception.Message
-                    ),
-                    _ => (
-                        StatusCodes.Status500InternalServerError,
-                        "Unexpected server error"
-                    )
+                    ValidationException => ( StatusCodes.Status400BadRequest, exception.Message ),
+                        _ => ( StatusCodes.Status500InternalServerError, "Unexpected server error"),
                 };
                 context.Response.StatusCode = statusCode;
                 var error = new ApiError(statusCode, message);
