@@ -20,10 +20,7 @@ public class UsersController : ControllerBase
     private readonly IUserService _userService;
     private readonly IValidator<RegisterUserCommand> _validator;
 
-    public UsersController(
-        IMapper mapper,
-        IUserService userService,
-        IValidator<RegisterUserCommand> validator)
+    public UsersController( IMapper mapper, IUserService userService, IValidator<RegisterUserCommand> validator)
     {
         _mapper = mapper;
         _userService = userService;
@@ -51,4 +48,5 @@ public class UsersController : ControllerBase
 
         return Ok(ApiResult<UserResponse>.Ok(response));
     }
+    
 }

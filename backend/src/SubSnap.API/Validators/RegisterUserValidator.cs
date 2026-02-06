@@ -4,11 +4,11 @@ using SubSnap.Core.DTOs.Application.Commands.Users;
 namespace SubSnap.API.Validators;
 
 //Validator vive solo nell’API, non tocca Domain, Repository o DB!
-public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
+public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>  //abstractValidator<T> è FluentValidation.
 {
-    public RegisterUserValidator()
+    public RegisterUserValidator() 
     {
-        RuleFor(x => x.Email)
+        RuleFor(x => x.Email)  //rules di FluentValidation
             .NotEmpty()
             .EmailAddress()
             .WithMessage("Email must be valid");
