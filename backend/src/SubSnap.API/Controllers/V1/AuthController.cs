@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using SubSnap.API.Contracts.Responses;
 using SubSnap.Core.Domain.ValueObjects;
 using SubSnap.Core.Services.Application;
 
@@ -18,12 +19,11 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var email = new Email(request.Email);
-        var (access, refresh) =
-            await _authService.LoginAsync(email, request.Password);
-        return Ok(new
+        var (access, refresh) = await _authService.LoginAsync(email, request.Password);
+        return Ok(ApiResult<object>.Ok(new
         {
             accessToken = access,
             refreshToken = refresh
-        });
+        }));
     }
 }

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\Clock\" />
-    <Folder Include="Abstractions\Identity\" />
     <Folder Include="Abstractions\Messaging\" />
     <Folder Include="Contracts\External\" />
     <Folder Include="Domain\Events\" />

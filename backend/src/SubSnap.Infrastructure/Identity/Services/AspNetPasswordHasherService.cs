@@ -1,14 +1,10 @@
 ﻿using SubSnap.Core.Abstractions.Identity;
 using SubSnap.Core.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace SubSnap.Infrastructure.Identity.Services;
 
-public class AspNetPasswordHasher : IPasswordHasher
+public class AspNetPasswordHasherService : IPasswordHasher
 {
     private readonly PasswordHasher<object> _hasher = new();
 

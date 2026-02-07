@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Contracts\Requests\" />
-    <Folder Include="Controllers\Base\" />
     <Folder Include="Filters\Authorization\" />
     <Folder Include="Filters\Exception\" />
     <Folder Include="Filters\Validation\" />

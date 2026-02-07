@@ -24,24 +24,25 @@ public class User
     public DateTime? LastLogin { get; private set; }  //private set; xk editabile solo here da method UpdateLastLogin()
     public bool IsActive { get; private set; }
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens;
-
+    
 
     protected User() { }  //constructor!! x ORM only
 
     public User(   //constructor
-        UserId? id,  //nullable
+        //UserId? id,  //nullable
         Email email,
         PasswordHash passwordHash,
-        DateTime createdAt,
-        DateTime updatedAt,
-        DateTime? lastLogin)
+        //DateTime createdAt,
+        //DateTime updatedAt,
+        //DateTime? lastLogin)
     {
-        Id = id?? UserId.New();  //fallback genero dal backend!!
+        //Id = id?? UserId.New();  //fallback genero dal backend!!
+        Id = UserId.New();
         Email = email;
         PasswordHash = passwordHash;
-        CreatedAt = createdAt;
-        UpdatedAt = updatedAt;
-        LastLogin = lastLogin;
+        IsActive = true;
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj
@@ -53,16 +54,15 @@ public class User
     //    //utilizza anche file.Core / AssemblyInfo.cs
     //}
 
-    public void UpdateLastLogin(DateTime now)
+    public void UpdateLastLogin()
     {
-        LastLogin = now;
-        UpdatedAt = now;
+        LastLogin = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
     }
     public void AddRefreshToken(string token, DateTime expiresAt)
     {
         _refreshTokens.Add(new RefreshToken(token, expiresAt));
     }
-
     public void RevokeRefreshToken(string token)
     {
         var rt = _refreshTokens.Single(x => x.Token == token);

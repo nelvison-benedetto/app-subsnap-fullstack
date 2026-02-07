@@ -9,6 +9,6 @@ namespace SubSnap.Core.Abstractions.Identity;
 
 public interface IPasswordHasher   //non lo chiamo IAspNetPasswordHAsher xk x astrazione non devo citare nessuna tecnologia
 {
-    string Hash(string plainPassword);
+    PasswordHash Hash(string plainPassword);
     bool Verify(string plainPassword, PasswordHash passwordHash);
 }
