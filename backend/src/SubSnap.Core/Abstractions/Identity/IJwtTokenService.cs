@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Core.Abstractions.Identity;
 
-public interface ITokenService
+public interface IJwtTokenService
 {
     string GenerateAccessToken(User user);
     string GenerateRefreshToken();

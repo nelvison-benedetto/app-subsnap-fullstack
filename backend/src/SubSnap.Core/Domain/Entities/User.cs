@@ -11,7 +11,9 @@ namespace SubSnap.Core.Domain.Entities;
 //rappresentare concetti di business, contenere logica (es. ChangeEmail, Login()), essere indipendente da EF, SQL, Docker, VPS
 public class User
 {
-    public UserId? Id { get; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
+    private readonly List<RefreshToken> _refreshTokens = new();
+
+    public UserId? Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
         //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
     public Email Email { get; private set; }   //type other obj  (readonly struct)(./ValueObjects/)
         //private set; perche in futuro voglio poterlo cambiare here only w e.g. method ChangeEmail()
@@ -20,6 +22,9 @@ public class User
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     public DateTime? LastLogin { get; private set; }  //private set; xk editabile solo here da method UpdateLastLogin()
+    public bool IsActive { get; private set; }
+    public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens;
+
 
     protected User() { }  //constructor!! x ORM only
 
@@ -31,7 +36,7 @@ public class User
         DateTime updatedAt,
         DateTime? lastLogin)
     {
-        Id = id;
+        Id = id?? UserId.New();  //fallback genero dal backend!!
         Email = email;
         PasswordHash = passwordHash;
         CreatedAt = createdAt;
@@ -52,5 +57,15 @@ public class User
     {
         LastLogin = now;
         UpdatedAt = now;
+    }
+    public void AddRefreshToken(string token, DateTime expiresAt)
+    {
+        _refreshTokens.Add(new RefreshToken(token, expiresAt));
+    }
+
+    public void RevokeRefreshToken(string token)
+    {
+        var rt = _refreshTokens.Single(x => x.Token == token);
+        rt.Revoke();
     }
 }
