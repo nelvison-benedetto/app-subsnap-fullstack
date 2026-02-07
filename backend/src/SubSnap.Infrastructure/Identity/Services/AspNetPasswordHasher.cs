@@ -12,15 +12,19 @@ public class AspNetPasswordHasher : IAspNetPasswordHasher
 {
     private readonly PasswordHasher<object> _hasher = new();
 
-    public string Hash(string plainPassword)
-        => _hasher.HashPassword(null!, plainPassword);
-
-    public bool Verify(string plainPassword, string passwordHash)
-        => _hasher.VerifyHashedPassword(null!, passwordHash, plainPassword)
-           == PasswordVerificationResult.Success;
-
+    public PasswordHash Hash(string plainPassword)
+    {
+        var hash = _hasher.HashPassword(null!, plainPassword);
+        return new PasswordHash(hash);
+    }
     public bool Verify(string plainPassword, PasswordHash passwordHash)
     {
-        throw new NotImplementedException();
+        var result = _hasher.VerifyHashedPassword(
+            null!,
+            passwordHash.Value,
+            plainPassword);
+
+        return result == PasswordVerificationResult.Success;
     }
+
 }
