@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Core.DTOs.Auth;
 
-public sealed class LoginRequest
+public sealed class LoginRequestAuth
 {
     public required string Email { get; init; }
     public required string Password { get; init; }

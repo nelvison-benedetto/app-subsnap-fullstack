@@ -26,6 +26,7 @@ public class JwtTokenService : IJwtTokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id!.Value.ToString()),  //! perche deve esistere
             //.Sub è Subject -> ID univoco dello user
+            new Claim(ClaimTypes.NameIdentifier, user.Id!.Value.ToString()), //cosi aspnet sa sempre chi è l'utente
             new Claim(JwtRegisteredClaimNames.Email, user.Email.Value)
             //.Email è Email dello user
         };

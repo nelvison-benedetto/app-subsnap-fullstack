@@ -44,5 +44,12 @@ public class AuthService
         await _uow.SaveChangesAsync();
         return (accessToken, refreshToken);
     }
-    
+    public async Task LogoutAsync(UserId userId, string refreshToken)
+    {
+        var user = await _userRepository.GetByIdAsync(userId)
+            ?? throw new Exception("User not found");
+        user.RevokeRefreshToken(refreshToken);
+        await _uow.SaveChangesAsync();
+    }
+
 }

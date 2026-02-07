@@ -66,7 +66,9 @@ public class User
     }
     public void RevokeRefreshToken(string token)
     {
-        var rt = _refreshTokens.Single(x => x.Token == token);
+        var rt = _refreshTokens.SingleOrDefault(x => x.Token == token);
+        if (rt is null || !rt.IsActive())
+            throw new InvalidOperationException("Invalid refresh token");
         rt.Revoke();
     }
 
