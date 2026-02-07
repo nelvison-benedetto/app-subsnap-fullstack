@@ -45,7 +45,7 @@ public class User
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
-
+    
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj
     //     //internal, solo .Infrastructure(stesso prj, assembly) puo usarlo!
     //{
