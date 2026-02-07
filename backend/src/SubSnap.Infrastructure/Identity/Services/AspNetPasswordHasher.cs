@@ -24,7 +24,6 @@ public class AspNetPasswordHasher : IPasswordHasher
             null!,
             passwordHash.Value,
             plainPassword);
-
         return result == PasswordVerificationResult.Success;
     }
 }
