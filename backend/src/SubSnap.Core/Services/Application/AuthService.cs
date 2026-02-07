@@ -13,13 +13,13 @@ namespace SubSnap.Core.Services.Application;
 public class AuthService
 {
     private readonly IUserRepository _userRepo;
-    private readonly IAspNetPasswordHasher _passwordHasher;
+    private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _tokenService;
     private readonly IUnitOfWork _uow;
 
     public AuthService(
         IUserRepository userRepo,
-        IAspNetPasswordHasher passwordHasher,
+        IPasswordHasher passwordHasher,
         IJwtTokenService tokenService,
         IUnitOfWork uow)
     {

@@ -15,19 +15,17 @@ namespace SubSnap.Infrastructure.Identity.Services;
 public class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _config;
-
     public JwtTokenService(IConfiguration config)
     {
         _config = config;
     }
-
     public string GenerateAccessToken(User user)
     {
         var claims = new[]
         {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email)
-            };
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id!.Value.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email.Value)
+        };
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]!));
@@ -39,10 +37,8 @@ public class JwtTokenService : IJwtTokenService
             expires: DateTime.UtcNow.AddMinutes(10),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
-
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
     public string GenerateRefreshToken()
         => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 }

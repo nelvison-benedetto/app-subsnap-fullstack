@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Infrastructure.Identity.Services;
 
-public class AspNetPasswordHasher : IAspNetPasswordHasher
+public class AspNetPasswordHasher : IPasswordHasher
 {
     private readonly PasswordHasher<object> _hasher = new();
 
@@ -17,6 +17,7 @@ public class AspNetPasswordHasher : IAspNetPasswordHasher
         var hash = _hasher.HashPassword(null!, plainPassword);
         return new PasswordHash(hash);
     }
+
     public bool Verify(string plainPassword, PasswordHash passwordHash)
     {
         var result = _hasher.VerifyHashedPassword(
@@ -26,5 +27,4 @@ public class AspNetPasswordHasher : IAspNetPasswordHasher
 
         return result == PasswordVerificationResult.Success;
     }
-
 }
