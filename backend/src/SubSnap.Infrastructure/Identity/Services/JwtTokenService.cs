@@ -24,22 +24,26 @@ public class JwtTokenService : IJwtTokenService
     {
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id!.Value.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id!.Value.ToString()),  //! perche deve esistere
+            //.Sub è Subject -> ID univoco dello user
             new Claim(JwtRegisteredClaimNames.Email, user.Email.Value)
+            //.Email è Email dello user
         };
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]!));
+        //carichi una secret key, la trasformi in byte[], la usi per firmare il token
 
-        var token = new JwtSecurityToken(
+        var token = new JwtSecurityToken(  //creazione JWT
             issuer: _config["JwtSettings:Issuer"],
             audience: _config["JwtSettings:Audience"],
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(10),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(token);  //serializzazione, return xxxxx.yyyyy.zzzzz
     }
     public string GenerateRefreshToken()
         => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+    //usa CSPRNG (crypto-secure), usa CSPRNG (crypto-secure), praticamente impossibile da indovinare
 }

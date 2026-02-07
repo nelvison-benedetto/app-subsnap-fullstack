@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace SubSnap.Infrastructure.Identity.Services;
 
-public class AspNetPasswordHasherService : IPasswordHasher
+public class AspNetPasswordHasherService : IPasswordHasherService
 {
-    private readonly PasswordHasher<object> _hasher = new();
+    private readonly PasswordHasher<object> _hasher = new();  //here PasswordHasher è di plugin Microsoft.AspNetCore.Identity
 
     public PasswordHash Hash(string plainPassword)
     {
@@ -20,6 +20,6 @@ public class AspNetPasswordHasherService : IPasswordHasher
             null!,
             passwordHash.Value,
             plainPassword);
-        return result == PasswordVerificationResult.Success;
+        return result == PasswordVerificationResult.Success;  //here PasswordVerificationResult è di plugin Microsoft.AspNetCore.Identity
     }
 }
