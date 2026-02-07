@@ -8,7 +8,7 @@ namespace SubSnap.Core.DTOs.Application.Results.Users;
 
 //questi sono usati dai Services, poi mappati in Responses
 public sealed record UserResult(
-    int Id,
+    Guid Id,
     string Email
 );
 

@@ -6,11 +6,6 @@ using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
 using SubSnap.Core.DTOs.Application.Commands.Users;
 using SubSnap.Core.DTOs.Application.Results.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubSnap.Core.Services.Application;
 
@@ -36,12 +31,12 @@ public class UserService : IUserService
 
         // 2️ Creo il domain entity
         var user = new User(
-            id: null,    //new UserId(0),   //EF genererà l'ID se è identity sul db!
+            //id: null,  
             email: new Email(command.Email),
-            passwordHash: new PasswordHash(command.Password),
-            createdAt: DateTime.UtcNow,
-            updatedAt: DateTime.UtcNow,
-            lastLogin: null
+            passwordHash: new PasswordHash(command.Password)
+            //createdAt: DateTime.UtcNow,
+            //updatedAt: DateTime.UtcNow,
+            //lastLogin: null
         );
 
         await _userRepository.AddAsync(user);  // 2. Aggiungo al repository (senza SaveChanges!)
@@ -54,7 +49,7 @@ public class UserService : IUserService
         //user.SetId(new UserId(entity.UserId)); // entity = EF tracked entity che ora ha l'ID
 
         return new UserResult(
-            user!.Id!.Value.Value,
+            user.Id.Value,
             user.Email.Value
         );
 

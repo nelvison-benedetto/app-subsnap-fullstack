@@ -7,7 +7,6 @@ using SubSnap.Core.Contracts.Services;
 using SubSnap.Core.Contracts.UnitOfWork;
 using SubSnap.Core.Services.Application;
 using SubSnap.Infrastructure.Identity.Services;
-using SubSnap.Infrastructure.Persistence.Context;
 using SubSnap.Infrastructure.Persistence.UnitOfWork;
 using SubSnap.Infrastructure.Repositories.Implementations;
 
