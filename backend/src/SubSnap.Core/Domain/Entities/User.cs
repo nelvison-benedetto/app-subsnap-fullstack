@@ -13,7 +13,7 @@ public class User
 {
     private readonly List<RefreshToken> _refreshTokens = new();
 
-    public UserId? Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
+    public UserId Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
         //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
     public Email Email { get; private set; }   //type other obj  (readonly struct)(./ValueObjects/)
         //private set; perche in futuro voglio poterlo cambiare here only w e.g. method ChangeEmail()
@@ -31,10 +31,11 @@ public class User
     public User(   //constructor
         //UserId? id,  //nullable
         Email email,
-        PasswordHash passwordHash,
+        PasswordHash passwordHash
         //DateTime createdAt,
         //DateTime updatedAt,
-        //DateTime? lastLogin)
+        //DateTime? lastLogin
+    )
     {
         //Id = id?? UserId.New();  //fallback genero dal backend!!
         Id = UserId.New();
@@ -68,4 +69,5 @@ public class User
         var rt = _refreshTokens.Single(x => x.Token == token);
         rt.Revoke();
     }
+
 }

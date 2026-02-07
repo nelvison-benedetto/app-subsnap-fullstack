@@ -18,7 +18,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var email = new Email(request.Email);
+        var email = new Email(request.Email);  //validation
         var (access, refresh) = await _authService.LoginAsync(email, request.Password);
         return Ok(ApiResult<object>.Ok(new
         {

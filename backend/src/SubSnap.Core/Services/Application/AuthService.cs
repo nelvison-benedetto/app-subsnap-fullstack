@@ -12,37 +12,37 @@ namespace SubSnap.Core.Services.Application;
 
 public class AuthService
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IJwtTokenService _tokenService;
+    private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasherService _passwordHasherService;
+    private readonly IJwtTokenService _jwtTokenService;
     private readonly IUnitOfWork _uow;
 
     public AuthService(
         IUserRepository userRepo,
-        IPasswordHasher passwordHasher,
-        IJwtTokenService tokenService,
+        IPasswordHasherService passwordHasherService,
+        IJwtTokenService jwtTokenService,
         IUnitOfWork uow)
     {
-        _userRepo = userRepo;
-        _passwordHasher = passwordHasher;
-        _tokenService = tokenService;
+        _userRepository = userRepo;
+        _passwordHasherService = passwordHasherService;
+        _jwtTokenService = jwtTokenService;
         _uow = uow;
     }
 
     public async Task<(string accessToken, string refreshToken)> LoginAsync(Email email, string plainPassword)
     {
-        var user = await _userRepo.GetByEmailAsync(email)
+        var user = await _userRepository.GetByEmailAsync(email)
             ?? throw new Exception("Invalid credentials");
 
-        if (!_passwordHasher.Verify(plainPassword, user.PasswordHash))
+        if (!_passwordHasherService.Verify(plainPassword, user.PasswordHash))
             throw new Exception("Invalid credentials");
 
-        var accessToken = _tokenService.GenerateAccessToken(user);
-        var refreshToken = _tokenService.GenerateRefreshToken();
+        var accessToken = _jwtTokenService.GenerateAccessToken(user);
+        var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
         user.AddRefreshToken(refreshToken, DateTime.UtcNow.AddDays(30));
         await _uow.SaveChangesAsync();
         return (accessToken, refreshToken);
     }
-
+    
 }

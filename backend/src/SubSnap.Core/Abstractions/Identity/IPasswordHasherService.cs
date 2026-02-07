@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Core.Abstractions.Identity;
 
-public interface IPasswordHasher   //non lo chiamo IAspNetPasswordHAsher xk x astrazione non devo citare nessuna tecnologia
+public interface IPasswordHasherService   //non lo chiamo IAspNetPasswordHAsher xk x astrazione non devo citare nessuna tecnologia
 {
     PasswordHash Hash(string plainPassword);
     bool Verify(string plainPassword, PasswordHash passwordHash);

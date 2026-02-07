@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.API.Validators;
 using SubSnap.Core.Contracts.Services;
-using SubSnap.Core.Domain.ValueObjects;
 using SubSnap.Core.DTOs.Application.Commands.Users;
 using SubSnap.Core.DTOs.External.Requests.Users;
 using SubSnap.Core.DTOs.External.Responses.Users;
-using SubSnap.Core.Services.Application;
 
 namespace SubSnap.API.Controllers.V1;
 

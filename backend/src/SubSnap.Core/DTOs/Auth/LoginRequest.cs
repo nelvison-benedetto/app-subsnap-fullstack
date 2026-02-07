@@ -8,6 +8,7 @@ namespace SubSnap.Core.DTOs.Auth;
 
 public sealed class LoginRequest
 {
-    public string Email { get; init; } = default!;
-    public string Password { get; init; } = default!;
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+    //è il modelbuilder che crea l'obj, non il controller, le proprietà vengono settate dopo la costruzione
 }
