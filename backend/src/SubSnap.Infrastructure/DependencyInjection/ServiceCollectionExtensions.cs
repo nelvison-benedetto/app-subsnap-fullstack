@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SubSnap.Core.Abstractions.Identity;
 using SubSnap.Core.Contracts.Repositories;
 using SubSnap.Core.Contracts.Services;
 using SubSnap.Core.Contracts.UnitOfWork;
 using SubSnap.Core.Services.Application;
+using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
 using SubSnap.Infrastructure.Persistence.UnitOfWork;
 using SubSnap.Infrastructure.Repositories.Implementations;
@@ -24,6 +26,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();  //!!!repositories
         services.AddScoped<IUnitOfWork, EFUnitOfWork>();     //!!!unit of work
         services.AddScoped<IUserService, UserService>();     //!!!application services
+        services.AddScoped<IPasswordHasherService, AspNetPasswordHasherService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<AuthService>();
 
         return services;
     }
