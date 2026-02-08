@@ -19,7 +19,6 @@
     <Folder Include="Persistence\InMemory\UnitOfWork\" />
     <Folder Include="Persistence\InMemory\Stores\" />
     <Folder Include="Persistence\Filesystem\" />
-    <Folder Include="Persistence\Configurations\" />
     <Folder Include="Repositories\Base\" />
   </ItemGroup>
 
