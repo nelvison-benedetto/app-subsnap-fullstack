@@ -10,6 +10,9 @@ namespace SubSnap.Infrastructure.Mapping;
 
 //cuore del ponte tra Domain e Persistence (.core/domain/entities <==> .infrastructure/persistence/scaffold (quelli che scarico dal db))
 //Domain entities(core/domain/entitites/...), Persistence entitites(scaffold/...)
+
+//NON TI SERVE PIU SE FAI DOMAIN-FIRST (cmnq dont delete!!)
+
 public static class UserMapper   //è static
 {
     // DB -> Domain
