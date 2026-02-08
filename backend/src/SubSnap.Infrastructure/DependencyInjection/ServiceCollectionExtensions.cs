@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();     //!!!application services
         services.AddScoped<IPasswordHasherService, AspNetPasswordHasherService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.AddScoped<AuthService>();
+        services.AddScoped<AuthService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.
