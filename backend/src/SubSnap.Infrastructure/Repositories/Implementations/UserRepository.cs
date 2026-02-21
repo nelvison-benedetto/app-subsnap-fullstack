@@ -26,16 +26,16 @@ public class UserRepository : IUserRepository
 
     public async Task<Core.Domain.Entities.User?> GetByIdAsync(UserId id)  //Task<User?> because it can return null, return type is domain User
     {
-        var entity = await _context.User
+        var entity = await _context.Users
             .AsNoTracking()  //NO TRACKING xk ef non deve tracciare nulla, EF here è sol x data reading.
-            .FirstOrDefaultAsync(x => x.UserId == id.Value);
+            .FirstOrDefaultAsync(x => x.Id == id);
         //ora entity è di type 'Infrastructure.Persistence.Scaffold.User?'
         return entity is null ? null : UserMapper.ToDomain(entity);  //mapping entity found to domain!!CLEAN ARCHITECTURE
     }
 
     public async Task<User?> GetByEmailAsync(Email email)
     {
-        var entity = await _context.User
+        var entity = await _context.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email == email.Value);
         return entity is null ? null : UserMapper.ToDomain(entity);
@@ -44,7 +44,7 @@ public class UserRepository : IUserRepository
     //AGGREGATES
     public async Task<UserAggregate?> GetAggregateAsync(UserId id)
     {
-        var entity = await _context.User
+        var entity = await _context.Users
             .Include(u => u.Subscription)  //ok! gli aggregate vanno caricati insieme!
             .Include(u => u.SharedLink)
             .AsNoTracking()
@@ -68,8 +68,8 @@ public class UserRepository : IUserRepository
         //    user.UpdatedAt,
         //    user.LastLogin
         //);
-        var entity = UserMapper.ToEntity(user);
-        _context.User.Add(entity);
+        //var entity = UserMapper.ToEntity(user);
+        _context.Users.Add(user);
         // ❗ NON SaveChanges qui
         // l'ID verrà valorizzato DOPO dal UnitOfWork!!
         return Task.CompletedTask;
