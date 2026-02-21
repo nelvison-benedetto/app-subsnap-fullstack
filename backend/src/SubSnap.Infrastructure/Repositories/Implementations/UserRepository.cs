@@ -36,7 +36,7 @@ public class UserRepository : IUserRepository
     public async Task<User?> GetByEmailAsync(Email email)
     {
         return await _context.Users
-            .AsNoTracking()
+            //.AsNoTracking() non usarlo, xk altrimenti refresh token non viene salvato
             .FirstOrDefaultAsync(x => x.Email == email);
         //return entity is null ? null : UserMapper.ToDomain(entity);
     }

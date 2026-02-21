@@ -32,10 +32,10 @@ public class AuthService
     public async Task<(string accessToken, string refreshToken)> LoginAsync(Email email, string plainPassword)
     {
         var user = await _userRepository.GetByEmailAsync(email)
-            ?? throw new Exception("Invalid credentials");
+            ?? throw new UnauthorizedAccessException();
 
         if (!_passwordHasherService.Verify(plainPassword, user.PasswordHash))
-            throw new Exception("Invalid credentials");
+            throw new UnauthorizedAccessException();
 
         var accessToken = _jwtTokenService.GenerateAccessToken(user);
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
