@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
     {
         var entity = await _context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Email == email.Value);
+            .FirstOrDefaultAsync(x => x.Email == email);
         return entity is null ? null : UserMapper.ToDomain(entity);
     }
 
