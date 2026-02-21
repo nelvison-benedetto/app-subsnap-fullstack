@@ -38,7 +38,7 @@ public class UsersController : ControllerBase
         // Application Layer
         var result = await _userService.RegisterAsync(command);
         // Result -> Response
-        var response = _mapper.Map<UserResponse>(result);
+        var response = _mapper.Map<UserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<UserResponse>.Ok(response));
         //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
         //ApiResult<T>.Ok(data)  my custom envelope standard per tutte le risposte

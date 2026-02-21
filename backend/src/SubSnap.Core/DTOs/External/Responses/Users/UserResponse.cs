@@ -9,6 +9,6 @@ namespace SubSnap.Core.DTOs.External.Responses.Users;
 //quello che esponi al world (xk non esponi mai domain o entity)
 public sealed class UserResponse
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     public string Email { get; init; } = null!;
 }
