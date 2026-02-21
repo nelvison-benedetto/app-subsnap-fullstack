@@ -20,6 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
+            .HasColumnName("id")  //nome ESATTAMENTE UGUALE a quello sul db!! oppure install plugin EFCore.'NamingConventions' che auto fa e.g.RefreshTokens -> refresh_tokens(x il db)
             .HasConversion(
                 id => id.Value,
                 value => new UserId(value))
@@ -27,6 +28,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .ValueGeneratedNever();
 
         builder.Property(x => x.Email)
+            .HasColumnName("email")
             .HasConversion(
                 e => e.Value,
                 v => new Email(v))
@@ -37,6 +39,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsUnique();
 
         builder.Property(x => x.PasswordHash)
+            .HasColumnName("passwordhash")
             .HasConversion(
                 p => p.Value,
                 v => new PasswordHash(v))
@@ -44,17 +47,20 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         builder.Property(x => x.IsActive)
-            .IsRequired();
+            .IsRequired().HasColumnName("isactive");
 
         builder.Property(x => x.CreatedAt)
+            .HasColumnName("createdat")
             .HasColumnType("timestamp(3) without time zone")
             .IsRequired();
 
         builder.Property(x => x.UpdatedAt)
+            .HasColumnName("updatedat")
             .HasColumnType("timestamp(3) without time zone")
             .IsRequired();
 
         builder.Property(x => x.LastLogin)
+            .HasColumnName("lastlogin")
             .HasColumnType("timestamp(3) without time zone");
 
         builder.Ignore(x => x.RefreshTokens);
