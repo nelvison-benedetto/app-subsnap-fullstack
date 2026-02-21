@@ -53,4 +53,8 @@ public class AuthService
         await _uow.SaveChangesAsync();
     }
 
+    public async Task<(string access, string refresh)> RefreshAsync(string refreshToken)
+    {
+        
+    }
 }

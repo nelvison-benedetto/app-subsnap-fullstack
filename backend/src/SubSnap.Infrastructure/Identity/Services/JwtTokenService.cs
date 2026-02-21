@@ -39,7 +39,7 @@ public class JwtTokenService : IJwtTokenService
             issuer: _config["JwtSettings:Issuer"],
             audience: _config["JwtSettings:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(10),
+            expires: DateTime.UtcNow.AddMinutes(10), //accesstoken dura 10min
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
         );
         return new JwtSecurityTokenHandler().WriteToken(token);  //serializzazione, return xxxxx.yyyyy.zzzzz
