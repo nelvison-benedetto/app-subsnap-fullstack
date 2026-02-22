@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Infrastructure.Mapping;
 
-
 // OLD APPROACH
 //public static class UserAggregateMapper
 //{
