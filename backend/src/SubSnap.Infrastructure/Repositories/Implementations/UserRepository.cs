@@ -47,8 +47,16 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
     {
-        var users = await _context.Users.Include(u => u.RefreshTokens).ToListAsync();
-        return users.FirstOrDefault(u => u.RefreshTokens.Any(rt => _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token))));
+        //var users = await _context.Users.Include(u => u.RefreshTokens).ToListAsync();
+        //return users.FirstOrDefault(u => u.RefreshTokens.Any(rt => _passwordHasherService.Verify(refreshToken, new PasswordHash(rt.Token))));
+        var tokens = await _context.Set<RefreshToken>()
+        .Include(rt => rt.User) // oppure risali via FK
+        .ToListAsync();
+        var match = tokens.FirstOrDefault(rt =>
+            _passwordHasherService.Verify(
+                refreshToken,
+                new PasswordHash(rt.Token)));
+        return match?.User;
     }
 
 
