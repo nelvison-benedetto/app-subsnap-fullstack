@@ -90,30 +90,22 @@ public class UserRepository : IUserRepository
 
     public async Task<UserAggregate?> GetUserAggregateAsync(UserId userId)
     {
-        var userEntity = await _context.Users
-            .Include(u => u.Subscriptions)
-            .Include(u => u.SharedLinks)
-            .FirstOrDefaultAsync(u => u.Id == userId.Value);
-        if (userEntity is null) return null;
-        var userDomain = new User(
-            new Email(userEntity.Email),
-            new PasswordHash(userEntity.PasswordHash)
-        );
-        var subscriptionsDomain = userEntity.Subscriptions
-            .Select(s => new Subscription(
-                new SubscriptionId(s.Id),
-                s.Amount,
-                s.CreatedAt
-            ))
-            .ToList();
-        var sharedLinksDomain = userEntity.SharedLinks
-            .Select(sl => new SharedLink(
-                new SharedLinkId(sl.Id),
-                sl.Url,
-                sl.CreatedAt
-            ))
-            .ToList();
-        return new UserAggregate(userDomain, subscriptionsDomain, sharedLinksDomain);
+        // no navigation properties fra aggregates quindi NO .Include()!!, usa invece query separate. style usato anche da Uber & Stripe
+
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user is null)
+            return null;
+
+        var subscriptions = await _context.Set<Subscription>()
+            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)
+            .ToListAsync();
+
+        var sharedLinks = await _context.Set<SharedLink>()
+            .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
+            .ToListAsync();
+        return new UserAggregate(user, subscriptions, sharedLinks);
     }
 
     public async Task<UserSubscriptionsAggregate?> GetUserWithSubscriptionsAsync(UserId userId)
@@ -123,7 +115,7 @@ public class UserRepository : IUserRepository
         if (user is null)
             return null;
         var subscriptions = await _context.Set<Subscription>()
-            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)  //UserId è una shadow property, questo è l'unico modo x usarla!!
+            .Where(s => EF.Property<Guid>(s, "UserId") == userId.Value)  //usi la shadow property
             .ToListAsync();
         return new UserSubscriptionsAggregate(user, subscriptions);
     }
