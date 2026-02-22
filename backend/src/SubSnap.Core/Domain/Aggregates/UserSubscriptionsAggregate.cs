@@ -22,5 +22,5 @@ public class UserSubscriptionsAggregate
         Subscriptions = subscriptions?.ToList().AsReadOnly() //Espone ReadOnly (sicuro)
             ?? throw new ArgumentNullException(nameof(subscriptions));
     }
-    //se vuoi solo e.g. user+ subscription: nel repo usi method GetUserWithSubscriptionsAsync() che return type <UserSubscriptionsAggregate>
+    //se vuoi solo e.g. user+subscription: nel .infrastructure/dataloaders/UserAggregateLoader.cs usi method LoadWithSubscriptions() che return type <UserSubscriptionsAggregate>
 }

@@ -39,11 +39,11 @@ public class UserAggregateLoader
         // PARALLEL CONTEXTS
         var subscriptionsTask = LoadSubscriptions(userId, ct);
 
-        await Task.WhenAll(subscriptionsTask);
+        await Task.WhenAll(subscriptionsTask);  //run queries in parallelo!!
+        //Thread A → DbContext #1 → Users
+        //Thread B → DbContext #2 → Subscriptions
 
-        return new UserSubscriptionsAggregate(
-            user,
-            subscriptionsTask.Result);
+        return new UserSubscriptionsAggregate( user, subscriptionsTask.Result);
     }
 
     private async Task<List<Subscription>> LoadSubscriptions(
@@ -53,12 +53,11 @@ public class UserAggregateLoader
         await using var context =
             await _factory.CreateDbContextAsync(ct);
 
-        return await context.Subscriptions
+        return await context.Set<Subscription>()
             .AsNoTracking()
             .Where(s =>
                 EF.Property<Guid>(s, "UserId") == userId.Value)
             .ToListAsync(ct);
     }
-    //Thread A → DbContext #1 → Users
-    //Thread B → DbContext #2 → Subscriptions
+    
 }
