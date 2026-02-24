@@ -12,13 +12,13 @@ namespace SubSnap.Core.Services.Application;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class RegisterUserHandler : IUserService
+public class Handler : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasherService _passwordHasherService;
 
-    public RegisterUserHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
+    public Handler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -53,7 +53,7 @@ public class RegisterUserHandler : IUserService
     //    );
     //}
 
-    public async Task<UserResult> RegisterAsync(RegisterUserCommand command)
+    public async Task<UserResult> RegisterAsync(Command command)
     {
         // 1️⃣ Email unique
         var existing =

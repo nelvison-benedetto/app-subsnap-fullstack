@@ -9,7 +9,7 @@
   <ItemGroup>
     <Folder Include="Abstractions\Clock\" />
     <Folder Include="Abstractions\Messaging\" />
-    <Folder Include="Contracts\External\" />
+    <Folder Include="Contracts_NOWALLFILESIN.application-abstractions\External\" />
     <Folder Include="Domain\Events\" />
     <Folder Include="Domain\Constants\" />
     <Folder Include="Domain\Specifications\" />
@@ -18,9 +18,9 @@
     <Folder Include="Exceptions\DomainExceptions\" />
     <Folder Include="Exceptions\ApplicationExceptions\" />
     <Folder Include="Exceptions\InfrastructureExceptions\" />
-    <Folder Include="Helpers\GuardClauses\" />
-    <Folder Include="Helpers\Extensions\" />
-    <Folder Include="Helpers\Result\" />
+    <Folder Include="HelpersGeneric\GuardClauses\" />
+    <Folder Include="HelpersGeneric\Extensions\" />
+    <Folder Include="HelpersGeneric\Result\" />
     <Folder Include="Services\Domain\" />
     <Folder Include="Services\Validators\" />
   </ItemGroup>

@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Application.UseCases.Users.GetUserDashboard;
 
-public class GetUserDashboardHandler
+internal class Result
 {
 }

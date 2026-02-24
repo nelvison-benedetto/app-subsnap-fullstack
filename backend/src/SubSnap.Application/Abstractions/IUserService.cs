@@ -10,5 +10,5 @@ namespace SubSnap.Core.Contracts.Services;
 
 public interface IUserService
 {
-    Task<UserResult> RegisterAsync(RegisterUserCommand command);
+    Task<UserResult> RegisterAsync(Command command);
 }

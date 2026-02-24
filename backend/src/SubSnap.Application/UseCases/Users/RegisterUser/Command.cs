@@ -11,7 +11,7 @@ namespace SubSnap.Core.DTOs.Application.Commands.Users;
 //    string Email,
 //    string Password
 //);
-public sealed class RegisterUserCommand
+public sealed class Command
 {
     public required string Email { get; init; }
     public required string Password { get; init; }
