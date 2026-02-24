@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Core.Services.Application;
 
-public class AuthService
+public class AuthHandler
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IUnitOfWork _uow;
 
-    public AuthService(
+    public AuthHandler(
         IUserRepository userRepo,
         IPasswordHasherService passwordHasherService,
         IJwtTokenService jwtTokenService,
