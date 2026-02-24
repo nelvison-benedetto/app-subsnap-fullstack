@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Messaging\" />
-    <Folder Include="Abstractions\Queries\" />
-    <Folder Include="Abstractions\Persistence\" />
+    <Folder Include="Ports\Messaging\" />
+    <Folder Include="Ports\Queries\" />
+    <Folder Include="Ports\Persistence\" />
     <Folder Include="Contracts\Commands\" />
     <Folder Include="Contracts\Results\" />
     <Folder Include="Contracts\Queries\" />
