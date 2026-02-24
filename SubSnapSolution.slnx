@@ -2,6 +2,7 @@
   <Folder Name="/backend/" />
   <Folder Name="/backend/src/">
     <Project Path="backend/src/SubSnap.API/SubSnap.API.csproj" />
+    <Project Path="backend/src/SubSnap.Application/SubSnap.Application.csproj" Id="62e6ac1e-c067-4ebe-8ceb-93a30db7108b" />
     <Project Path="backend/src/SubSnap.Core/SubSnap.Core.csproj" />
     <Project Path="backend/src/SubSnap.Infrastructure/SubSnap.Infrastructure.csproj" />
   </Folder>
