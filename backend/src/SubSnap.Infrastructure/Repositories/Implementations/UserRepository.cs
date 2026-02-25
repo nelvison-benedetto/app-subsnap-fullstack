@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
-using SubSnap.Core.Abstractions.Identity;
 using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;

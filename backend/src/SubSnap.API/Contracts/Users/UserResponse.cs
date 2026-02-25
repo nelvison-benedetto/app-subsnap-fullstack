@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//namespace SubSnap.Core.DTOs.External.Responses.Users;
 
-namespace SubSnap.Core.DTOs.External.Responses.Users;
+namespace SubSnap.Application.Contracts.Users;
+
 
 //quello che esponi al world (xk non esponi mai domain o entity)
 public sealed class UserResponse

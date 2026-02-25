@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SubSnap.Core.Contracts.Queries;
+using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;

@@ -1,6 +1,6 @@
-﻿using SubSnap.Core.Abstractions.Identity;
-using SubSnap.Core.Domain.ValueObjects;
+﻿using SubSnap.Core.Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
+using SubSnap.Application.Ports.Auth;
 
 namespace SubSnap.Infrastructure.Identity.Services;
 

@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SubSnap.Core.Abstractions.Identity;
-using SubSnap.Core.Contracts.Queries;
-using SubSnap.Core.Contracts.Repositories;
-using SubSnap.Core.Contracts.Services;
-using SubSnap.Core.Contracts.UnitOfWork;
-using SubSnap.Core.Services.Application;
 using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
