@@ -12,11 +12,11 @@
 
   <ItemGroup>
     <Folder Include="Ports\Messaging\" />
-    <Folder Include="Contracts\Commands\" />
-    <Folder Include="Contracts\Results\" />
-    <Folder Include="Contracts\Queries\" />
+    <Folder Include="ContractsOLDNOWallcontractsAREINusecases\Commands\" />
+    <Folder Include="ContractsOLDNOWallcontractsAREINusecases\Results\" />
+    <Folder Include="ContractsOLDNOWallcontractsAREINusecases\Queries\" />
     <Folder Include="DTOs_OLD_ORIGINALIN.core\Shared_NOWALLFILESIN.application-common\" />
-    <Folder Include="Common\" />
+    <Folder Include="CommonSCONSIGLIATO-no-dto-no-shared\" />
     <Folder Include="UseCases\Auth\Logout\" />
     <Folder Include="UseCases\Auth\RefreshToken\" />
   </ItemGroup>
