@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SubSnap.Core.Contracts.Repositories;
+namespace SubSnap.Application.Ports.Persistence;
 
 public interface ISubscriptionRepository
 {

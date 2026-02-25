@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SubSnap.Core.Contracts.Services;
+namespace SubSnap.Application.Ports.Services;
 
 public interface IUserService
 {

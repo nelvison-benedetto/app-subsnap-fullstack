@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SubSnap.Core.DTOs.Application.Results.Users;
+namespace SubSnap.Application.UseCases.Users;
 
 //questi sono usati dai Services, poi mappati in Responses
 public sealed record UserResult(

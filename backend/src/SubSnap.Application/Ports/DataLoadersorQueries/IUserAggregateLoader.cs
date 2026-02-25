@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SubSnap.Core.Contracts.Queries;
+namespace SubSnap.Application.Ports.DataLoadersorQueries;
 
 public interface IUserAggregateLoader
 {

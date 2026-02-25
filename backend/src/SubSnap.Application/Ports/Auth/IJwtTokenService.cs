@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SubSnap.Core.Abstractions.Identity;
+namespace SubSnap.Application.Ports.Auth;
 
 public interface IJwtTokenService
 {
