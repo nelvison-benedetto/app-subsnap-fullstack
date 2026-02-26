@@ -8,8 +8,7 @@ namespace SubSnap.Application.UseCases.Auth.Login;
 public sealed class LoginHandler
 {
 
-    //version without policies/ e loaders/
-    //ORIGINAL CODE in AuthHandler.cs
+    //code without policies/ e loaders/   ORIGINAL CODE in AuthHandler.cs
     //private readonly IUserRepository _userRepository;
     //private readonly IPasswordHasherService _passwordHasherService;
     //private readonly IJwtTokenService _jwtTokenService;
