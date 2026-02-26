@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Application.UseCases.Auth.Login;
 
-internal class Command
+internal class LoginCommand
 {
 }

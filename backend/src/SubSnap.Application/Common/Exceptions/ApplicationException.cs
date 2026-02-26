@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SubSnap.Application.UseCases.Auth.Login;
+namespace SubSnap.Application.Common.Exceptions;
 
-internal class Result
+internal class ApplicationException
 {
 }

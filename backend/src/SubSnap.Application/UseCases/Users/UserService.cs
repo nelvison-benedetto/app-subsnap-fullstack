@@ -1,6 +1,6 @@
-﻿using SubSnap.Application.Ports.Auth;
-using SubSnap.Application.Ports.Persistence;
-using SubSnap.Application.Ports.Services;
+﻿using SubSnap.Application.Abstractions.Auth;
+using SubSnap.Application.Abstractions.Persistence;
+using SubSnap.Application.Abstractions.Services;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
