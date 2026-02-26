@@ -12,8 +12,8 @@ public class LogoutTokenPolicy
     {
         _hasher = hasher;
     }
-    public RefreshToken EnsureValid(string providedToken, User user)
-    {
+    public Core.Domain.Entities.RefreshToken EnsureValid(string providedToken, User user) 
+    {  //uso tutto il path xk ho anche folder che si chiama RefreshToken e VS si confonde
         var token = user.FindActiveRefreshToken(
             storedToken =>
                 _hasher.Verify(
