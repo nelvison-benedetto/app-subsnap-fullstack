@@ -26,7 +26,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(typeof(ApiResult<UserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ApiResult<UserResponse>>> Register( RegisterUserRequest request )
+    public async Task<ActionResult<ApiResult<UserResponse>>> Register( RegisterUserRequest request , CancellationToken ct)
     {
         // Request -> Command mapping
         var command = _mapper.Map<RegisterUserCommand>(request);
