@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Auth;
 using SubSnap.API.Contracts.Responses;
-using SubSnap.Application.UseCases.Auth;
 using SubSnap.Core.Domain.ValueObjects;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
