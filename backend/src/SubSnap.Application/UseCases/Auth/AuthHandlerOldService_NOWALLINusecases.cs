@@ -4,7 +4,7 @@ using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth;
 
-//in futuro lo puoi splittare in cartelle Login/Logout/Refresh (Uber style), e creare 3 handler diversi, ma per ora va bene cosi
+//not connected in SubSnap.Infrastructure.DependencyInjection.ServiceCollectionExtensions bc intanto QUESTO FILE NON LO USO now all in usecases!!
 
 public class AuthHandler
 {

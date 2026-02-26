@@ -5,6 +5,7 @@ using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Application.Ports.Services;
+using SubSnap.Application.Ports.Users;
 using SubSnap.Application.UseCases.Auth;
 using SubSnap.Application.UseCases.Auth.Login;
 using SubSnap.Application.UseCases.Auth.Logout;
@@ -38,14 +39,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
 
-        //services.AddScoped<AuthHandler>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
+        //services.AddScoped<AuthHandler-oldService>(); //non serve interfaccia x utilizzarlo xk non attravera i BOUNDARIES, è un servizio che rimane interno a .Infrastructure, non lo chiama nessun altro prj.
         //Auth
-        services.AddScoped<LoginHandler>();
-        services.AddScoped<LogoutHandler>();
-        services.AddScoped<RTHandler>();
+        services.AddScoped<ILoginHandler, LoginHandler>();
+        services.AddScoped<ILogoutHandler, LogoutHandler>();
+        services.AddScoped<IRTHandler, RTHandler>();
+        services.AddScoped<IRUHandler, RUHandler>();
 
         //User
-        //services.AddScoped<IUserService, UserService>();     //!!!application services
+        //services.AddScoped<IUserHandler-oldService, UserHandler-oldService>();     //OLD now all in .application.usecases
         services.AddScoped<RUHandler>();
 
         return services;

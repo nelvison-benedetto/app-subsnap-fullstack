@@ -1,5 +1,6 @@
 ﻿using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
+using SubSnap.Application.Ports.Users;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
@@ -8,7 +9,7 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class RUHandler //: IUserService non serve xk  
+public class RUHandler : IRUHandler 
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;

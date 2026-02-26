@@ -4,7 +4,7 @@ using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth.RefreshToken;
 
-public sealed class RTHandler
+public sealed class RTHandler : IRTHandler
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasherService _passwordHasherService;

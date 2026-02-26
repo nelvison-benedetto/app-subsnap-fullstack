@@ -1,4 +1,6 @@
-﻿using SubSnap.Application.UseCases.Users.RegisterUser;
+﻿using SubSnap.Application.Ports.Auth;
+using SubSnap.Application.Ports.Persistence;
+using SubSnap.Application.UseCases.Users.RegisterUser;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
@@ -7,13 +9,13 @@ namespace SubSnap.Application.UseCases.Users;
 
 //no EF, no DBO 
 //transazione controllata, orchestration pulita
-public class UserService : IUserService
+public class UserHandlerOldService_NOWALLINusecases //: IUserHandlerOldService  not connected in SubSnap.Infrastructure.DependencyInjection.ServiceCollectionExtensions bc intanto QUESTO FILE NON LO USO now all in usecases!!
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasherService _passwordHasherService;
 
-    public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
+    public UserHandlerOldService_NOWALLINusecases(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
