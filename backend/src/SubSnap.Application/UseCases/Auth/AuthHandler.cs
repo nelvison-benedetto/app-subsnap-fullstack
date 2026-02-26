@@ -32,7 +32,7 @@ public class AuthHandler
 
         if (!_passwordHasherService.Verify(plainPassword, user.PasswordHash))
             throw new UnauthorizedAccessException();
-
+        
         var accessToken = _jwtTokenService.GenerateAccessToken(user);
         var refreshRaw = _jwtTokenService.GenerateRefreshToken();
         var refreshHash = _passwordHasherService.Hash(refreshRaw);
