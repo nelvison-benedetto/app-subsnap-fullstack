@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
         // Validazione centralizzata
         await ValidatorHelper.ValidateCommandAsync(_validator, command);
         // Application Layer
-        var result = await _userService.RegisterAsync(command);
+        var result = await _userService.RegisterAsync(command, ct);
         // Result -> Response
         var response = _mapper.Map<UserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<UserResponse>.Ok(response));

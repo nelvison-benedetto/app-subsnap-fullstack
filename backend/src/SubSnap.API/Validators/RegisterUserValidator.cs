@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SubSnap.Application.UseCases.Users.RegisterUser;
 
 namespace SubSnap.API.Validators;
 
