@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SubSnap.API.Contracts.Responses;
-using SubSnap.Core.Domain.ValueObjects;
-using SubSnap.Core.DTOs.Auth;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using SubSnap.API.Contracts.Auth;
+using SubSnap.API.Contracts.Responses;
+using SubSnap.Application.UseCases.Auth;
+using SubSnap.Core.Domain.ValueObjects;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SubSnap.API.Controllers.V1;
 
@@ -13,17 +13,17 @@ namespace SubSnap.API.Controllers.V1;
 [Route("api/v1/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly AuthService _authService;
-    public AuthController(AuthService authService)
+    private readonly AuthHandler _authHandler;
+    public AuthController(AuthHandler authHandler)
     {
-        _authService = authService;
+        _authHandler = authHandler;
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestAuth request)
+    public async Task<IActionResult> Login([FromBody] LoginRequestAuth request, CancellationToken ct)
     {
         var email = new Email(request.Email);  //validation
-        var (access, refresh) = await _authService.LoginAsync(email, request.Password);
+        var (access, refresh) = await _authHandler.LoginAsync(email, request.Password, ct);
         return Ok(ApiResult<object>.Ok(new
         {
             accessToken = access,
@@ -33,23 +33,23 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout([FromBody] LogoutRequestAuth request)
+    public async Task<IActionResult> Logout([FromBody] LogoutRequestAuth request, CancellationToken ct)
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
         if (userIdClaim is null)
             return Unauthorized();
         var userId = new UserId(Guid.Parse(userIdClaim));
-        await _authService.LogoutAsync(userId, request.RefreshToken);
+        await _authHandler.LogoutAsync(userId, request.RefreshToken, ct);
         return Ok();
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(
-    [FromBody] RefreshTokenRequestAuth request)
+    [FromBody] RefreshTokenRequestAuth request, CancellationToken ct)
     {
         var (access, refresh) =
-            await _authService.RefreshAsync(request.RefreshToken);
+            await _authHandler.RefreshAsync(request.RefreshToken, ct);
 
         return Ok(ApiResult<object>.Ok(new
         {
