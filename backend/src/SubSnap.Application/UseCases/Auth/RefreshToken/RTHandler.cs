@@ -1,10 +1,14 @@
-﻿using SubSnap.Application.Ports.Auth;
+﻿using MediatR;
+using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth.RefreshToken;
 
-public sealed class RTHandler : IRTHandler
+//public sealed class RTHandler : IRTHandler
+public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
+
+//x plugin MediatR(validazione automatica!) (works w fluentvalidation) see validationbehaviour.cs  dependencyinjection.cs
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasherService _passwordHasherService;
@@ -23,7 +27,7 @@ public sealed class RTHandler : IRTHandler
         _uow = uow;
     }
 
-    public async Task<RTResult> HandleAsync( RTCommand command, CancellationToken ct )
+    public async Task<RTResult> Handle( RTCommand command, CancellationToken ct )
     {
         var user = await _userRepository.FindByRefreshTokenAsync(
             command.RefreshToken, ct)

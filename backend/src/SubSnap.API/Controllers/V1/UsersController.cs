@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.API.Contracts.Users.Requests;
 using SubSnap.API.Contracts.Users.Responses;
-using SubSnap.API.Validators;
 using SubSnap.Application.Ports.Users;
 using SubSnap.Application.UseCases.Users.RegisterUser;
 
@@ -36,8 +35,8 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<ApiResult<RegisterUserResponse>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<RUCommand>(request);
-        //await ValidatorHelper.ValidateCommandAsync(_validator, command); E' POCO CLEAN, il controller non dovrebbe conoscere la validation. ORA INVECE USO
-        //PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code)(see more in .application.common.behaviours.validationbehaviour.cs)
+        //await ValidatorHelper.ValidateCommandAsync(_validator, command); E' POCO CLEAN (il controller non dovrebbe conoscere la validation) ORA INVECE USO VALIDAZIONE AUTOMATICA w
+        //PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code) + plugin fluentvalidation. see more validationbehaviour.cs dependencyinjection.cs
         var result = await _ruHandler.HandleAsync(command, ct);
         var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<RegisterUserResponse>.Ok(response));

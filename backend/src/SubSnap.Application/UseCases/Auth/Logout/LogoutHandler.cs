@@ -1,11 +1,13 @@
-﻿using SubSnap.Application.Ports.Auth;
+﻿using MediatR;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Application.UseCases.Auth.Logout.Loaders;
 using SubSnap.Application.UseCases.Auth.Logout.Policies;
 
 namespace SubSnap.Application.UseCases.Auth.Logout;
 
-public sealed class LogoutHandler : ILogoutHandler
+//public sealed class LogoutHandler : ILogoutHandler
+public sealed class LogoutHandler : IRequestHandler<LogoutCommand> //x plugin MediatR(validazione automatica!) (works w fluentvalidation) see validationbehaviour.cs  dependencyinjection.cs    
+
 {
     //code without policies/ e loaders/, ORIGINAL CODE IN AuthHandler.cs
     //private readonly UserByIdLoader _loader;
@@ -49,7 +51,7 @@ public sealed class LogoutHandler : ILogoutHandler
         _policy = policy;
         _uow = uow;
     }
-    public async Task HandleAsync( LogoutCommand command, CancellationToken ct)
+    public async Task Handle( LogoutCommand command, CancellationToken ct)
     {
         var user = await _loader.Load(command.UserId, ct)
             ?? throw new UnauthorizedAccessException();
