@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.API.Contracts.Users.Requests;
@@ -15,17 +16,20 @@ public class UsersController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IValidator<RUCommand> _validator;
-    private readonly IRUHandler _ruHandler;
+    //private readonly IRUHandler _ruHandler;
+    private readonly IMediator _mediator;
 
     public UsersController( 
         IMapper mapper, 
         IValidator<RUCommand> validator,
-        IRUHandler ruHandler
+        //IRUHandler ruHandler
+        IMediator mediator
     )
     {
         _mapper = mapper;
         _validator = validator;
-        _ruHandler = ruHandler;
+        //_ruHandler = ruHandler;
+        _mediator = mediator;
     }
 
     [HttpPost("register")]
@@ -37,7 +41,8 @@ public class UsersController : ControllerBase
         var command = _mapper.Map<RUCommand>(request);
         //await ValidatorHelper.ValidateCommandAsync(_validator, command); E' POCO CLEAN (il controller non dovrebbe conoscere la validation) ORA INVECE USO VALIDAZIONE AUTOMATICA w
         //PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code) + plugin fluentvalidation. see more validationbehaviour.cs dependencyinjection.cs
-        var result = await _ruHandler.HandleAsync(command, ct);
+        //var result = await _ruHandler.HandleAsync(command, ct);  OLD w IRUHandler
+        var result = await _mediator.Send(command, ct);  //x plugin MediatR
         var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<RegisterUserResponse>.Ok(response));
         //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
