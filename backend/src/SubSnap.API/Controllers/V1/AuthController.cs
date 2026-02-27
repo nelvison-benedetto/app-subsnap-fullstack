@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginRequestAuth request, CancellationToken ct)
+    public async Task<ActionResult<ApiResult<LoginResponseAuth>>> LoginAsync([FromBody] LoginRequestAuth request, CancellationToken ct)
     {
         var email = new Email(request.Email);  //validation
         //var (access, refresh) = await _authHandler.LoginAsync(email, request.Password,ct); OLD
@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshAsync(
+    public async Task<ActionResult<ApiResult<RefreshTokenResponseAuth>>> RefreshAsync(
     [FromBody] RefreshTokenRequestAuth request, CancellationToken ct)
     {
         //var (access, refresh) =
