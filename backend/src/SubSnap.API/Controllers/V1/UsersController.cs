@@ -30,16 +30,16 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
-    [ProducesResponseType(typeof(ApiResult<RegisterUserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method.
+    [ProducesResponseType(typeof(ApiResult<RegisterUserResponse>), StatusCodes.Status200OK)] //questi servono agli sviluppatori per capire / OpenAPI / Swagger x status code http x this method. SE INVECE USI IL RETURN Task<IActionResult> funziona sempre ma è meno leggibile da .net e da SwaggerApi
     [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)]
+    //[ProducesResponseType(typeof(ApiResult<object>), StatusCodes.Status500InternalServerError)] questo intanto è globale lo da auto via middleware
     public async Task<ActionResult<ApiResult<RegisterUserResponse>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken ct)
     {
         var command = _mapper.Map<RUCommand>(request);
-        await ValidatorHelper.ValidateCommandAsync(_validator, command);
+        //await ValidatorHelper.ValidateCommandAsync(_validator, command);
         var result = await _ruHandler.HandleAsync(command, ct);
         var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
-        return Ok(ApiResult<RUResult>.Ok(response));
+        return Ok(ApiResult<RegisterUserResponse>.Ok(response));
         //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
     }
 
