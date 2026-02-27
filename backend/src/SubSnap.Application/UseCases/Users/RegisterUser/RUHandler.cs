@@ -12,7 +12,7 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 //transazione controllata, orchestration pulita
 
 //public class RUHandler : IRUHandler 
-public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x MediatR(validazione automatica!)
+public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin MediatR(validazione automatica!)
 
 {
     private readonly IUserRepository _userRepository;
@@ -55,7 +55,7 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x Mediat
     //}
 
     public async Task<RUResult> Handle(RUCommand command, CancellationToken ct)  
-        //MediatR vuole che si chiami 'Handle' non 'HandleAsync'
+        //plugin MediatR vuole che si chiami 'Handle' non 'HandleAsync'
     {
         // 1️⃣ Email unique
         var existing =
