@@ -18,7 +18,7 @@ public static class ValidatorHelper
         if (!result.IsValid)
         {
             var errorMessages = result.Errors.Select(e => e.ErrorMessage).ToList();
-            throw new FluentValidation.ValidationException(result.Errors);
+            throw new FluentValidation.ValidationException(result.Errors); //questo verra poi catturato da tuo custom in ExceptionMiddlewareExtensions.cs e formattato in una ApiError correttamenet da restituire al client
         }
     }
 
