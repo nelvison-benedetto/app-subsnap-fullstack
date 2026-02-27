@@ -23,7 +23,7 @@ public sealed class RTHandler : IRTHandler
         _uow = uow;
     }
 
-    public async Task<RTResult> Handle( RTCommand command, CancellationToken ct )
+    public async Task<RTResult> HandleAsync( RTCommand command, CancellationToken ct )
     {
         var user = await _userRepository.FindByRefreshTokenAsync(
             command.RefreshToken, ct)

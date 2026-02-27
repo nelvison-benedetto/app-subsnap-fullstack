@@ -4,5 +4,5 @@ namespace SubSnap.Application.Ports.Auth;
 
 public interface ILogoutHandler
 {
-    Task Handle(LogoutCommand command, CancellationToken ct);
+    Task HandleAsync(LogoutCommand command, CancellationToken ct);
 }

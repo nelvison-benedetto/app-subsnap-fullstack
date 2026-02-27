@@ -4,5 +4,5 @@ namespace SubSnap.Application.Ports.Users;
 
 public interface IRUHandler
 {
-    Task<RUResult> Handle(RUCommand command, CancellationToken ct);
+    Task<RUResult> HandleAsync(RUCommand command, CancellationToken ct);
 }

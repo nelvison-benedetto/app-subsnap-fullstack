@@ -4,5 +4,5 @@ namespace SubSnap.Application.Ports.Auth;
 
 public interface ILoginHandler
 {
-    Task<LoginResult> Handle(LoginCommand cmd, CancellationToken ct);
+    Task<LoginResult> HandleAsync(LoginCommand cmd, CancellationToken ct);
 }

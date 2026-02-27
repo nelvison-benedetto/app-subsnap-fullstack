@@ -4,5 +4,5 @@ namespace SubSnap.Application.Ports.Auth;
 
 public interface IRTHandler
 {
-    Task<RTResult> Handle(RTCommand command, CancellationToken ct);
+    Task<RTResult> HandleAsync(RTCommand command, CancellationToken ct);
 }

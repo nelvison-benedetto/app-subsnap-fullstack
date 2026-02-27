@@ -49,7 +49,7 @@ public sealed class LogoutHandler : ILogoutHandler
         _policy = policy;
         _uow = uow;
     }
-    public async Task Handle( LogoutCommand command, CancellationToken ct)
+    public async Task HandleAsync( LogoutCommand command, CancellationToken ct)
     {
         var user = await _loader.Load(command.UserId, ct)
             ?? throw new UnauthorizedAccessException();

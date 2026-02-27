@@ -50,7 +50,7 @@ public class RUHandler : IRUHandler
     //    );
     //}
 
-    public async Task<RUResult> Handle(RUCommand command, CancellationToken ct)
+    public async Task<RUResult> HandleAsync(RUCommand command, CancellationToken ct)
     {
         // 1️⃣ Email unique
         var existing =

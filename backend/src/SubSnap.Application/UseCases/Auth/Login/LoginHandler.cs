@@ -66,7 +66,7 @@ public sealed class LoginHandler : ILoginHandler
         _uow = uow;
     }
 
-    public async Task<LoginResult> Handle(LoginCommand cmd, CancellationToken ct)
+    public async Task<LoginResult> HandleAsync(LoginCommand cmd, CancellationToken ct)
     {
         var user = await _loader.Load(cmd.Email, ct)
             ?? throw new UnauthorizedAccessException();
@@ -79,5 +79,5 @@ public sealed class LoginHandler : ILoginHandler
         await _uow.SaveChangesAsync(ct);
         return new(access, refreshRaw);
     }
-
+    
 }
