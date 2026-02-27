@@ -41,6 +41,6 @@ public sealed class ValidationBehavior<TRequest, TResponse>
                 throw new ValidationException(failures);
         }
 
-        return await next(); //continua lungo la pipeline!
+        return await next(); //continua lungo la pipeline (cioe ora va all'HANDLER target!!)!
     }
 }
