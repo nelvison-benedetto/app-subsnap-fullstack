@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using SubSnap.API.Contracts.Auth.Responses;
+using SubSnap.Application.UseCases.Auth.Login;
+using SubSnap.Application.UseCases.Auth.RefreshToken;
 
 namespace SubSnap.API.Mapping;
 
@@ -7,7 +10,10 @@ public sealed class ResultToResponseProfile : Profile  //Profile è classe di Au
     public ResultToResponseProfile()
     {
         //CreateMap<From, To>()
-        
+        CreateMap<LoginResult, LoginResponseAuth>();
+
+        CreateMap<RTResult, RefreshTokenResponseAuth>();
+        //necessario fare .ConstructUsing() xk properties matchano stesso nome & no value objects (e.g.no Email Email)
 
     }
     //CreateMap<UserResult, UserResponse>();

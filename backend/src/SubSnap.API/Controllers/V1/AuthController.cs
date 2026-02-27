@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SubSnap.API.Contracts.Auth.Requests;
+using SubSnap.API.Contracts.Auth.Responses;
 using SubSnap.API.Contracts.Responses;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Users;
@@ -48,11 +49,13 @@ public class AuthController : ControllerBase
         //var command = new LoginCommand( new Email(request.Email), request.Password );  oppure meglio usi il mapper per essere pulito .API.mapping/
         var command = _mapper.Map<LoginCommand>(request);  //more info in .API.mapping/
         var result = await _loginHandler.HandleAsync(command, ct);
-        return Ok(ApiResult<object>.Ok(new
-        {
-            accessToken = result.AccessToken,
-            refreshToken = result.RefreshToken
-        }));
+        var response = _mapper.Map<LoginResponseAuth>(result);
+        //return Ok(ApiResult<object>.Ok(new
+        //{
+        //    accessToken = result.AccessToken,
+        //    refreshToken = result.RefreshToken
+        //}));
+        return Ok(ApiResult<LoginResponseAuth>.Ok(response));
     }
 
     [Authorize]
@@ -71,7 +74,7 @@ public class AuthController : ControllerBase
             request.RefreshToken
         );  //qui non uso il mapper xk non hanno un match diretto (in LogoutCommand ho anche Userid che lo trovo here non mi arriva direttamente da http)
         await _logoutHandler.HandleAsync(command, ct);
-        return Ok();
+        return NoContent();  //PERFECT REST!
     }
 
     [HttpPost("refresh")]
@@ -82,11 +85,13 @@ public class AuthController : ControllerBase
         //    await _authHandler.RefreshAsync(request.RefreshToken, ct);
         var command = _mapper.Map<RTCommand>(request);
         var result = await _rtHandler.HandleAsync(command, ct);
-        return Ok(ApiResult<object>.Ok(new
-        {
-            accessToken = result.AccessToken,
-            refreshToken = result.RefreshToken
-        }));
+        var response = _mapper.Map<RefreshTokenResponseAuth>(result);
+        //return Ok(ApiResult<object>.Ok(new
+        //{
+        //    accessToken = result.AccessToken,
+        //    refreshToken = result.RefreshToken
+        //}));
+        return Ok(ApiResult<RefreshTokenResponseAuth>.Ok(response));
     }
 
 }

@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Auth\Responses\" />
     <Folder Include="Contracts\NewFolder\" />
     <Folder Include="Contracts\Requests\" />
     <Folder Include="Contracts\Users\Responses\" />
