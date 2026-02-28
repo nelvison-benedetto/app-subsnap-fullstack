@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
 
         //!!!NON PIU NECESSARI GLI Ixxx degli handlers bc ora PLUGIN MEDIATR w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!!  uso PLUGIN MediatR
 
-        services.AddHostedService<OutboxProcessor>();
+        services.AddHostedService<OutboxProcessor>(); //va bene dovunque here nella chain, viene avviato auto quando l'host .net parte.
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.

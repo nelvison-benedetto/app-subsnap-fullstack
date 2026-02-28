@@ -7,6 +7,23 @@ using System.Text.Json;
 
 namespace SubSnap.Infrastructure.Background;
 
+/*
+ * OUTBOX pattern
+ senza puo accadere nel flow
+Save User ✅
+Publish Event → Send Email ❌ crash
+
+con outbox invece
+Transaction:
+   Save User
+   Save OutboxMessage
+COMMIT ✅
+
+Background Worker: 
+   reads Outbox
+   publishes event
+//se email fallisce , il record rimane nell'outbox e può essere ritentato, senza rischiare inconsistenza della transazione
+ */
 public sealed class OutboxProcessor : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
