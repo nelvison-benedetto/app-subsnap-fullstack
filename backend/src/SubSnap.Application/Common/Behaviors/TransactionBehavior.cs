@@ -3,6 +3,10 @@ using SubSnap.Application.Ports.Persistence;
 
 namespace SubSnap.Application.Common.Behaviors;
 
+/*
+ * eviti di fare SaveChangesAsync in ogni handler, ma lo fai in un unico punto centrale, con questo pipeline behavior!
+ */
+
 public sealed class TransactionBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
 {
