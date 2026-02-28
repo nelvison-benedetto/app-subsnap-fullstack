@@ -20,7 +20,9 @@ public sealed class UserRegisteredHandler
     {
         _logger.LogInformation(
             "User {UserId} registered",
-            notification.UserId.Value);
+            notification.UserId.Value);  //NON CONCATENARE W '+', ALTRIMENTI ILLEGGIBILE xk diventa pura str!!
+        //internamente diventa {"message": "User registered", "UserId": "123","level": "Information"}
+        //e quindi nei logs puoi fare query e.g. UserId=123 per filtrare
 
         // future:
         // send email
