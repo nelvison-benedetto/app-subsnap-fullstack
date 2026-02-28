@@ -1,5 +1,9 @@
 ﻿namespace SubSnap.API.Middleware.Correlation;
 
+/*
+ * Assegna automaticamente un Id ad ogni richiesta, lo include nella response e lo rende disponibile nei log. Utile per tracciare le richieste in scenari complessi (e.g. microservizi)!! xk senza vedi in debug i log di 1000 richieste che arrivano, con questo Id puoi filtrare e vedere solo i log relativi a quella richiesta specifica!!
+ * e.g. nei logs vedi ora '[CorrelationId=a12f-88dd] User registered' 
+ */
 public sealed class CorrelationIdMiddleware
 {
     private const string Header = "X-Correlation-Id";

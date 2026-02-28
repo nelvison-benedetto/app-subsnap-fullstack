@@ -1,5 +1,6 @@
 using SubSnap.API.StartupExtensions.Authentication;
 using SubSnap.API.StartupExtensions.Authorization;
+using SubSnap.API.StartupExtensions.CorrelationId;
 using SubSnap.API.StartupExtensions.Cors;
 using SubSnap.API.StartupExtensions.HealthChecks;
 using SubSnap.API.StartupExtensions.Swagger;
@@ -37,6 +38,7 @@ builder.Services.AddInfrastructure(builder.Configuration);  //servicecollectione
 var app = builder.Build();  //crei l'istanza finale dell'app. ora elenchi i middlewares (http chain)
 
 // Middleware pipeline
+app.UseCorrelationId();  //1° nella chain!! x ogni richiesta HTTP, se il client non fornisce un header "X-Correlation-ID", ne genera uno nuovo e lo aggiunge alla richiesta. Se invece il client fornisce già un "X-Correlation-ID", lo lascia intatto. In questo modo ogni richiesta ha un identificatore unico che può essere usato per tracciare la richiesta attraverso i log e i sistemi di monitoraggio (e.g.Telemetery..)
 app.UseSwaggerConfiguration();
 app.UseCorsConfiguration();
 app.UseHttpsRedirection();
