@@ -72,7 +72,7 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
         );
         // 4️⃣ Persist
         await _userRepository.AddAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare!
+        //await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare! OLD, NOW CENTRALIZZATO IN transactionbehaviour.cs !!!
         return new RUResult(
             user.Id.Value,
             user.Email.Value

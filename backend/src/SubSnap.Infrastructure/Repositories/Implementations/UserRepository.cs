@@ -53,7 +53,7 @@ public class UserRepository : IUserRepository
                     refreshToken,
                     new PasswordHash(rt.Token)),
                 ct);
-
+        //non sarebbe correttissimo x DDD xk sto usando un service APPLICATIVO dentro un repository!! pero here è accettabile xk la query db dipende dal hash verification. anche uber staff fa cosi.
         if (token is null)
             return null;
 
@@ -120,7 +120,8 @@ public class UserRepository : IUserRepository
             .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
             .ToListAsync(ct);
 
-        await Task.WhenAll(subscriptionsTask, sharedLinksTask);  //EF work using parallel queries!! pero EF di default non puo fare parallel queries, quindi devi settare IDbContextFactory<ApplicationDbContext>...INFO
+        await Task.WhenAll(subscriptionsTask, sharedLinksTask);  
+        //pero EF di default non puo fare PARALLEL QUERIES, quindi devi settare IDbContextFactory<ApplicationDbContext>...INFO
 
         return new UserAggregate(
             user,

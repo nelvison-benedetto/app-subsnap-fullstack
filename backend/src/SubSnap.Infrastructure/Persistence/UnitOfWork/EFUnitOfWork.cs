@@ -2,6 +2,8 @@
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Core.Domain.Common;
 using SubSnap.Infrastructure.Persistence.Context;
+using SubSnap.Infrastructure.Persistence.Outbox;
+using System.Text.Json;
 
 namespace SubSnap.Infrastructure.Persistence.UnitOfWork;
 
@@ -16,32 +18,53 @@ public sealed class EFUnitOfWork : IUnitOfWork
         _mediator = mediator;
     }
 
-    public async Task SaveChangesAsync(CancellationToken ct = default)
-    { 
-        await _context.SaveChangesAsync(ct);
+    public async Task SaveChangesAsync(CancellationToken ct)
+    {
+        //before using OUTOFBOX x transactions (PER FARE INSIEME e.g.User saved + Send Email insieme, perche altrimenti magari User Saved (il primo nella mini-chain) SUCCESS ma poi Send Email FALLISCE, quindi hai INCOSISTENZA DELLA TRANSAZIONE! ). 
+        //await _context.SaveChangesAsync(ct);
+        ////DOMAIN EVENT management (xk magari quando registri un nuovo user vuoi automaticamente inviare un'email, ma DEVI ASSICURARTI di inviare email DOPO che registrazione su db sia un successo!!consistency garantita)
+        ////EF tiene traccia di tutte le entità che sono state modificate!!
+        ////1. Collect aggregates
+        //var aggregates = _context.ChangeTracker
+        //    .Entries<AggregateRoot>()
+        //    .Select(e => e.Entity)
+        //    .Where(e => e.DomainEvents.Any())
+        //    .ToList();
+        ////2. Extract events
+        //var events = aggregates
+        //    .SelectMany(a => a.DomainEvents)
+        //    .ToList();
+        ////3. Clear events
+        //aggregates.ForEach(a => a.ClearDomainEvents());
+        ////4. Publish
+        //foreach (var domainEvent in events)
+        //{
+        //    await _mediator.Publish(domainEvent, ct);
+        //}
 
-        //DOMAIN EVENT management (xk magari quando registri un nuovo user vuoi automaticamente inviare un'email, ma DEVI ASSICURARTI di inviare email DOPO che registrazione su db sia un successo!!consistency garantita)
-        //EF tiene traccia di tutte le entità che sono state modificate!!
-        //1. Collect aggregates
-        var aggregates = _context.ChangeTracker
+        var domainEvents = _context.ChangeTracker
             .Entries<AggregateRoot>()
-            .Select(e => e.Entity)
-            .Where(e => e.DomainEvents.Any())
+            .SelectMany(e => e.Entity.DomainEvents)
             .ToList();
-
-        //2. Extract events
-        var events = aggregates
-            .SelectMany(a => a.DomainEvents)
-            .ToList();
-
-        //3. Clear events
-        aggregates.ForEach(a => a.ClearDomainEvents());
-
-        //4. Publish
-        foreach (var domainEvent in events)
+        foreach (var entity in _context.ChangeTracker
+                     .Entries<AggregateRoot>())
         {
-            await _mediator.Publish(domainEvent, ct);
+            entity.Entity.ClearDomainEvents();
         }
+        foreach (var domainEvent in domainEvents)
+        {
+            var message = new OutboxMessage
+            {
+                Id = Guid.NewGuid(),
+                Type = domainEvent.GetType().Name,
+                Payload = JsonSerializer.Serialize(
+                    domainEvent,
+                    domainEvent.GetType()),
+                OccurredOnUtc = DateTime.UtcNow
+            };
+            _context.OutboxMessages.Add(message);
+        }
+        await _context.SaveChangesAsync(ct);
 
     }
 }
