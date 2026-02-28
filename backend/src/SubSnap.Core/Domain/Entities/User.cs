@@ -41,7 +41,7 @@ public class User : AggregateRoot  //aggregateroot x domain events
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
-        Raise(new UserRegisteredEvent(Id));  //domain event, xk è successo qualcosa di importante, e voglio che il resto del sistema ne sia consapevole (e.g. inviare email di benvenuto, loggare, ecc): il DOMAIN NON INVIA e.g.Email! dice solo 'user registered'
+        Raise(new UserRegisteredEvent(Id));  //x DOMAIN EVENT management, xk è successo qualcosa di importante, e voglio che il resto del sistema ne sia consapevole (e.g. inviare email di benvenuto, loggare, ecc): il DOMAIN NON INVIA e.g.Email! dice solo 'user registered'
     }
     
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj

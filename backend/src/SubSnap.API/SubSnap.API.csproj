@@ -10,7 +10,6 @@
     <Folder Include="Filters\Authorization\" />
     <Folder Include="Filters\Exception\" />
     <Folder Include="Filters\Validation\" />
-    <Folder Include="Middleware\Correlation\" />
     <Folder Include="Middleware\RequestLogging\" />
   </ItemGroup>
 
