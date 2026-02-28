@@ -49,7 +49,7 @@ public class User
     //    Id = id;
     //    //utilizza anche file.Core / AssemblyInfo.cs
     //}
-
+    
     public void UpdateLastLogin()
     {
         LastLogin = DateTime.UtcNow;

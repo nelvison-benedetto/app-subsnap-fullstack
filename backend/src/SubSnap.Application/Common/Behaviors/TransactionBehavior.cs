@@ -1,11 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using SubSnap.Application.Ports.Persistence;
 
 namespace SubSnap.Application.Common.Behaviors;
 
-internal class TransactionBehavior
+public sealed class TransactionBehavior<TRequest, TResponse>
+    : IPipelineBehavior<TRequest, TResponse>
 {
+    private readonly IUnitOfWork _uow;
+
+    public TransactionBehavior(IUnitOfWork uow)
+    {
+        _uow = uow;
+    }
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken ct)
+    {
+        var response = await next();
+
+        await _uow.SaveChangesAsync(ct);
+
+        return response;
+    }
 }
