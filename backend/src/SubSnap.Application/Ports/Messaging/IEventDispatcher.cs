@@ -2,7 +2,9 @@
 
 namespace SubSnap.Application.Ports.Messaging;
 
-public interface IEventDispatcher
-{
-    Task DispatchAsync(IReadOnlyCollection<IDomainEvent> events,CancellationToken ct = default);
-}
+//public interface IEventDispatcher
+//{
+//    Task DispatchAsync(IReadOnlyCollection<IDomainEvent> events,CancellationToken ct = default);
+//}
+
+//non piu necessario. better ora uso OutboxProcessor.cs come DISPATCHER async outbox pattern.
