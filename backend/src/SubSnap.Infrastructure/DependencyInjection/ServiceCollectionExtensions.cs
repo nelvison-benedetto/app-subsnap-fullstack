@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContextFactory<ApplicationDbContext>(options =>  options.UseNpgsql(configuration.GetConnectionString("sqlConnection")));  //SOLO READ(cosi puoi fare QUERY PARALLELE!!)
 
         services.AddHostedService<OutboxProcessor>(); //va bene dovunque here nella chain, viene avviato auto quando l'host .net parte.
+        services.AddHttpContextAccessor();  //cosi subscriptionbatchloader.cs ha accesso al correlationid x logging(mex di debug)
 
         //registrazione dei repositories!!
         //quando qualcuno chiede IUserRepository, la DI darà un’istanza concreta di UserRepository

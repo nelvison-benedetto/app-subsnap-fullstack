@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
 using SubSnap.Infrastructure.Persistence.Context;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace SubSnap.Infrastructure.DataLoaders;
 
@@ -23,6 +25,7 @@ public sealed class SubscriptionBatchLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory;
     private readonly ILogger<SubscriptionBatchLoader> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;  //x leggere correlationId dal middlewre corrente
 
     private readonly ConcurrentDictionary<Guid,
         TaskCompletionSource<IReadOnlyList<Subscription>>> _pending
@@ -33,11 +36,13 @@ public sealed class SubscriptionBatchLoader
 
     public SubscriptionBatchLoader(
         IDbContextFactory<ApplicationDbContext> factory,
-        ILogger<SubscriptionBatchLoader> logger
+        ILogger<SubscriptionBatchLoader> logger,
+        IHttpContextAccessor httpContextAccessor
     )
     {
         _factory = factory;
         _logger = logger;
+        _httpContextAccessor = httpContextAccessor;
     }
     public Task<IReadOnlyList<Subscription>> Load(
         UserId userId,
@@ -80,25 +85,68 @@ public sealed class SubscriptionBatchLoader
         await using var db =
             await _factory.CreateDbContextAsync();
 
-        var subs = await db.Set<Subscription>()
-            .Where(s => ids.Contains(
-                EF.Property<Guid>(s, "UserId")))
-            .ToListAsync();
+        //OLD before logging x batch loader
+        //var subs = await db.Set<Subscription>()
+        //    .Where(s => ids.Contains(
+        //        EF.Property<Guid>(s, "UserId")))
+        //    .ToListAsync();
+        //var grouped = subs
+        //    .GroupBy(s =>
+        //        EF.Property<Guid>(s, "UserId"))
+        //    .ToDictionary(g => g.Key, g =>
+        //        (IReadOnlyList<Subscription>)g.ToList());
+        //foreach (var (id, tcs) in snapshot)
+        //{
+        //    grouped.TryGetValue(id, out var result);
+        //    tcs.TrySetResult(result ?? new List<Subscription>());
+        //    _pending.TryRemove(id, out _);
+        //}
+        //lock (_lock)
+        //    _scheduled = false;
 
-        var grouped = subs
-            .GroupBy(s =>
-                EF.Property<Guid>(s, "UserId"))
-            .ToDictionary(g => g.Key, g =>
-                (IReadOnlyList<Subscription>)g.ToList());
+        //LOGGING SPECIFICO anche X BATCH LOADERS
+        // Recupero CorrelationId dal contesto HTTP
+        var correlationId = _httpContextAccessor.HttpContext?.Items["CorrelationId"]
+            ?? _httpContextAccessor.HttpContext?.Request.Headers["X-Correlation-Id"].FirstOrDefault()
+            ?? Guid.NewGuid().ToString();
 
-        foreach (var (id, tcs) in snapshot)
+        using (_logger.BeginScope(new Dictionary<string, object>
         {
-            grouped.TryGetValue(id, out var result);
-            tcs.TrySetResult(result ?? new List<Subscription>());
-            _pending.TryRemove(id, out _);
+            ["CorrelationId"] = correlationId,
+            ["Batch"] = "SubscriptionLoader"
+        }))
+        {
+            _logger.LogInformation(
+                "Executing subscription batch query for {Count} users",
+                ids.Count);
+
+            var sw = Stopwatch.StartNew();
+
+            var subs = await db.Set<Subscription>()
+                .Where(s => ids.Contains(EF.Property<Guid>(s, "UserId")))
+                .ToListAsync();
+
+            sw.Stop();
+
+            _logger.LogInformation(
+                "Batch query completed in {ElapsedMs}ms returning {Rows} rows",
+                sw.ElapsedMilliseconds,
+                subs.Count);
+
+            var grouped = subs
+                .GroupBy(s => EF.Property<Guid>(s, "UserId"))
+                .ToDictionary(g => g.Key, g => (IReadOnlyList<Subscription>)g.ToList());
+
+            foreach (var (id, tcs) in snapshot)
+            {
+                grouped.TryGetValue(id, out var result);
+                tcs.TrySetResult(result ?? new List<Subscription>());
+                _pending.TryRemove(id, out _);
+            }
         }
 
         lock (_lock)
             _scheduled = false;
+
     }
 }
