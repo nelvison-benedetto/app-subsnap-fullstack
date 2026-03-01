@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.DataLoadersorQueries;
+using SubSnap.Application.Ports.Messaging;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Infrastructure.Background;
 using SubSnap.Infrastructure.DataLoaders;
 using SubSnap.Infrastructure.Identity.Services;
+using SubSnap.Infrastructure.Messaging;
 using SubSnap.Infrastructure.Persistence.Context;
 using SubSnap.Infrastructure.Persistence.UnitOfWork;
 using SubSnap.Infrastructure.Repositories.Implementations;
@@ -47,7 +49,9 @@ public static class ServiceCollectionExtensions
 
         //!!!NON PIU NECESSARI GLI Ixxx degli handlers bc ora PLUGIN MEDIATR w 'services.AddMediatR(...)' (.application.dependencyinjection.dependencyinjection.cs) FA AUTO SCAN ASSEMBLY -> trova Ixxxhandler ->  registra xxxhandler.!!!  uso PLUGIN MediatR
 
+        services.AddScoped<IEventDispatcher, MediatREventDispatcher>();
         services.AddScoped<ISubscriptionBatchLoader, SubscriptionBatchLoader>(); //addscoped bc 1 http req = 1 batch window
+
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.
