@@ -6,9 +6,9 @@ namespace SubSnap.Core.Domain.Entities;
 
 //user domain semplice (no ICollection no EF no navigation props), w no list of SharedLink e Subscription 
 //rappresentare concetti di business, contenere logica (es. ChangeEmail, Login()), essere indipendente da EF, SQL, Docker, VPS
-public class User : AggregateRoot  //aggregateroot x domain events
+public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'aggregate root) puo emettere domain events (e.g. UserRegisteredEvent) che poi saranno raccolti e pubblicati da MediatR dopo che la transazione è stata completata con successo.
 {
-    private readonly List<RefreshToken> _refreshTokens = new();  //private xk SOLO user puo modificcarli, quindi i refreshtokens fanno parte dell'aggregate user!!(non hanno un lifecycle indipendente, non hanno un Repository proprio, non possono vivere senza user!!)
+    private readonly List<RefreshToken> _refreshTokens = new();  //private xk SOLO user puo modificarli, quindi i refreshtokens fanno parte dell'aggregate user!!(non hanno un lifecycle indipendente, non hanno un Repository proprio, non possono vivere senza user!!)
     
     public UserId Id { get; private set; }  //type other obj (readonly struct)(./ValueObjects/), COSI FAI LA VALIDAZIONE
         //nullable. verrà creato da DB. nessuns 'private setter' sull'id, domain puro
@@ -41,7 +41,7 @@ public class User : AggregateRoot  //aggregateroot x domain events
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
-        Raise(new UserRegisteredEvent(Id));  //x DOMAIN EVENT management, xk è successo qualcosa di importante, e voglio che il resto del sistema ne sia consapevole (e.g. inviare email di benvenuto, loggare, ecc): il DOMAIN NON INVIA e.g.Email! dice solo 'user registered'
+        Raise(new UserRegisteredEvent(Id));  //registra NUOVO DOMAIN EVENT (see aggregateroot.cs) alla creazione di questo nuovo user.
     }
     
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj
@@ -65,7 +65,8 @@ public class User : AggregateRoot  //aggregateroot x domain events
     public RefreshToken? FindActiveRefreshToken(
         //string providedToken, 
         //IPasswordHasherService hasher,  WRONG domain non deve conoscere servizi esterni, il domain non deve hasharare! deve solo sapere se matcha.
-        Func<string, bool> tokenMatcher)  //vero DDD (non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct))!
+
+        Func<string, bool> tokenMatcher)  //vero DDD (.domain non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct))!
     {
         return _refreshTokens
             .FirstOrDefault(rt =>

@@ -1,15 +1,21 @@
 ﻿namespace SubSnap.Core.Domain.Common;
 
+/*
+ * perche e.g. User è la root e Subscription è un children.
+ */
 public abstract class AggregateRoot
 {
-    private readonly List<IDomainEvent> _events = new();
+    private readonly List<IDomainEvent> _events = new(); //i domain events non verranno pubblicati subito, ma raccolti e pubblicati dopo che la transazione è stata completata con successo (e.g. dopo che l'utente è stato salvato nel DB), così eviti di pubblicare eventi per operazioni che poi falliscono e vengono rollbackate, garantendo così la consistenza del sistema!! (e.g. se pubblichi evento 'UserRegistered' prima di salvare l'utente, e poi il salvataggio fallisce, avrai un evento 'UserRegistered' senza un utente corrispondente nel DB, creando inconsistenza)
 
-    public IReadOnlyCollection<IDomainEvent> DomainEvents  //esponi eventi come ReadOnlyCollection, cosi nessuno puo modificarli dall'esterno, ma solo leggerli
+    public IReadOnlyCollection<IDomainEvent> DomainEvents  
         => _events.AsReadOnly();
+    //esponi eventi come ReadOnlyCollection, cosi nessuno puo modificarli dall'esterno, ma solo leggerli
 
-    protected void Raise(IDomainEvent @event)  //registra evento. @ serializza l'obj
+    protected void Raise(IDomainEvent @event)  
         => _events.Add(@event);
+    //registra evento, ma non fa ancora e.g.invia emails. @ serializza l'obj
 
-    public void ClearDomainEvents()  //pulisce eventi dopo che sono stati pubblicati da MediatR
+    public void ClearDomainEvents()  
         => _events.Clear();
+    //pulisce eventi dopo che sono stati pubblicati da MediatR, altrimenti li ri-pubblicheresti.
 }
