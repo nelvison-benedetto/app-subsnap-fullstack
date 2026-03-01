@@ -40,7 +40,7 @@ public sealed class OutboxProcessor : BackgroundService
     protected override async Task ExecuteAsync(
         CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)  //loop infinito che continua a leggere i messaggi dall'outbox finché il servizio è attivo (non viene shutdown dall'user)
+        while (!stoppingToken.IsCancellationRequested)  //LOOP INFINITO che continua a leggere i messaggi dall'outbox finché il servizio è attivo (non viene shutdown dall'user)
         {
             using var scope = _scopeFactory.CreateScope();  //crei scope manuale, xk backgrounservice è singleton, e applicationdbcontext è scoped, quindi devi creare scope manuale per risolverlo
 
@@ -55,7 +55,7 @@ public sealed class OutboxProcessor : BackgroundService
 
             foreach (var msg in messages)
             {
-                var type = Type.GetType(msg.Type)!;  //!!xk devi salvare AssemblyQualifiedName del tipo, così puoi deserializzare correttamente l'evento di dominio, anche se hai più eventi con lo stesso nome in assembly diversi. non .Name xk altrimenti in produzione fallirà.
+                var type = Type.GetType(msg.Type)!;  //!!xk devi salvare AssemblyQualifiedName del tipo, così puoi deserializzare correttamente l'evento di dominio, anche se hai più eventi con lo stesso nome in assembly diversi. non .Name xk altrimenti in produzione fallirà!
 
                 var domainEvent =
                     JsonSerializer.Deserialize(
@@ -65,9 +65,9 @@ public sealed class OutboxProcessor : BackgroundService
                 await _mediator.Publish(
                     (INotification)domainEvent!,
                     stoppingToken);
-                //publish evento di dominio usando MediatR, così sfrutti il meccanismo di gestione degli eventi e i relativi handler che hai definito nella tua applicazione
+                //publish evento di dominio usando MediatR, ora MediatR chiama UserRegisteredHandler
 
-                msg.ProcessedOnUtc = DateTime.UtcNow;  //lo marchi
+                msg.ProcessedOnUtc = DateTime.UtcNow;  //lo marchi (see OutboxMessage.cs)
             }
 
             await db.SaveChangesAsync(stoppingToken);

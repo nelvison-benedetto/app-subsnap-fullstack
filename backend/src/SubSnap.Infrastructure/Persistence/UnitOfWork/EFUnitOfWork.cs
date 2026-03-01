@@ -70,7 +70,7 @@ public sealed class EFUnitOfWork : IUnitOfWork
                 //domain event diventa json salvato sul db.INFOO TODO
                 OccurredOnUtc = DateTime.UtcNow
             };
-            _context.OutboxMessages.Add(message);
+            _context.OutboxMessages.Add(message);  //ADD TO DB row in tab OutboxMessage!!
         }
         //SINGLE TRANSACTION COMMIT: save both the state changes and the outbox messages together to ensure consistency!!
         await _context.SaveChangesAsync(ct);
@@ -82,7 +82,7 @@ public sealed class EFUnitOfWork : IUnitOfWork
         Outbox insert
         =
         ONE TRANSACTION
-        quindi se fallisce rollerback totale!
+        quindi se fallisce è un rollerback totale!
          */
 
     }
