@@ -63,7 +63,7 @@ public sealed class EFUnitOfWork : IUnitOfWork
             var message = new OutboxMessage
             {
                 Id = Guid.NewGuid(),
-                Type = domainEvent.GetType().AssemblyQualifiedName!,  //convert to Outboxmessage type, in questo modo quando lo leggo posso capire di che tipo di evento si tratta e deserializzarlo correttamente. usi AssemblyQualifiedName non invece .Name!!
+                Type = domainEvent.GetType().AssemblyQualifiedName!,  //CONVERT domain event -->  OUTBOX ROW type(outboxmessage.cs), in questo modo quando lo leggo posso capire di che tipo di evento si tratta e deserializzarlo correttamente. usi AssemblyQualifiedName non invece .Name (fallirebbe in produzione)!!
                 Payload = JsonSerializer.Serialize(
                     domainEvent,
                     domainEvent.GetType()),
