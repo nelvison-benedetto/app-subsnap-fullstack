@@ -9,6 +9,9 @@ namespace SubSnap.Application.DependencyInjection;
 
 /*
  SEPARATA DA .infrastructure.dependencyinjection.servicecollectionextensions bc .infrastructure NON DEVE CONOSCERE implementazioni in .application!  va bene se conosce le sue ports e.g.IUserRepository.cs perche intanto poi la vera implementazione rimane dentro .infrastructure (e.g.UserRepository.cs). 
+
+questo è per .Application level, quindi puoi registrare qui tutti i servizi che riguardano l'application layer, come ad esempio MediatR, FluentValidation e i pipeline behaviors. 
+Poi lo aggiungi direttamente nel Program.cs.
  */
 
 public static class DependencyInjection

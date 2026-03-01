@@ -7,7 +7,7 @@ public abstract class AggregateRoot
     public IReadOnlyCollection<IDomainEvent> DomainEvents  //esponi eventi come ReadOnlyCollection, cosi nessuno puo modificarli dall'esterno, ma solo leggerli
         => _events.AsReadOnly();
 
-    protected void Raise(IDomainEvent @event)  //registra evento
+    protected void Raise(IDomainEvent @event)  //registra evento. @ serializza l'obj
         => _events.Add(@event);
 
     public void ClearDomainEvents()  //pulisce eventi dopo che sono stati pubblicati da MediatR
