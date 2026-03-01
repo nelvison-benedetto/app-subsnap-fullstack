@@ -4,8 +4,7 @@ using SubSnap.Application.Ports.Persistence;
 namespace SubSnap.Application.Common.Behaviors;
 
 /*
- * eviti di fare SaveChangesAsync in ogni handler, ma lo fai in un unico punto centrale, con questo pipeline behavior!
- * da aggiungere su dependencyinjection.cs (.application level)
+ * eviti di fare SaveChangesAsync in ogni handler, ma lo fai in un unico punto centrale, con questo pipeline behavior! cosi handler diventa pure orchestration.
  */
 
 public sealed class TransactionBehavior<TRequest, TResponse>
@@ -22,7 +21,7 @@ public sealed class TransactionBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken ct)
     {
-        var response = await next();
+        var response = await next(); //handler eseguito, ma non ancora salvato su db
 
         await _uow.SaveChangesAsync(ct);
 

@@ -14,7 +14,6 @@ public sealed class ExceptionBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
 {
     private readonly ILogger<ExceptionBehavior<TRequest, TResponse>> _logger;
-
     public ExceptionBehavior(ILogger<ExceptionBehavior<TRequest, TResponse>> logger)
     {
         _logger = logger;
@@ -29,18 +28,16 @@ public sealed class ExceptionBehavior<TRequest, TResponse>
         {
             return await next();
         }
-        catch (DomainException ex)
+        catch (DomainException ex)  // se è un'eccezione di dominio, loggo come warning, altrimenti come error. le eccezioni di dominio sono prevedibili, non sono errori di sistema, ma errori di logica del dominio. quindi non voglio spammare i log con errori che sono normali, ma voglio comunque loggarli per capire cosa è successo.
         {
             _logger.LogWarning(ex,
-                "Domain error for {Request}", typeof(TRequest).Name);
-
-            throw;
+                "Domain error for {Request}", typeof(TRequest).Name);  //coloro in giallo, è un warning, non un error. è un'eccezione di dominio, non un'eccezione di sistema.
+            throw; // rilancio l'eccezione, altrimenti il comportamento successivo non sa che è successo un errore. se non rilancio, il comportamento successivo pensa che tutto sia andato bene, e continua a eseguire il codice, ma in realtà c'è stato un errore.
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,
-                "Unhandled error for {Request}", typeof(TRequest).Name);
-
+                "Unhandled error for {Request}", typeof(TRequest).Name);  //coloro in rosso, è un error, non un warning. è un'eccezione di sistema, non un'eccezione di dominio.
             throw;
         }
     }

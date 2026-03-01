@@ -5,13 +5,9 @@ using System.Diagnostics;
 namespace SubSnap.Application.Common.Behaviors;
 
 /*
- * ora ogni volta che un handler viene usato nel log appare 
+ora ogni volta che un handler viene usato nel log appare 
         Handling RegisterUserCommand
         Handled RegisterUserCommand in 45ms
- * 
- services.AddTransient(
-    typeof(IPipelineBehavior<,>),
-    typeof(LoggingBehavior<,>));
  */
 
 public sealed class LoggingBehavior<TRequest, TResponse>
@@ -34,16 +30,16 @@ public sealed class LoggingBehavior<TRequest, TResponse>
         var requestName = typeof(TRequest).Name;
 
         _logger.LogInformation(
-            "Handling {RequestName} {@Request}",
+            "Handling {RequestName} {@Request}",  //@ serializza obj
             requestName,
             request);
+        //devi loggare sempre in questo modo, senza '+' xk cosi e.g.OpenTelemetry riesce a parsare i log e a creare metriche!
 
-        var sw = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();  //misura il tempo di esecuzione dell'handler
 
-        var response = await next();
+        var response = await next();  //continua la pipeline...
 
         sw.Stop();
-
         _logger.LogInformation(
             "Handled {RequestName} in {ElapsedMs}ms",
             requestName,
