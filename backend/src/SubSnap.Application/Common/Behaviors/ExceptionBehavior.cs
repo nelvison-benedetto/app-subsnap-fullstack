@@ -8,7 +8,7 @@ namespace SubSnap.Application.Common.Behaviors;
  * .application level  exception pipeline. ORA NON DEVI PIU FARE I TRY/CATCH negli handler. gestione centralizzata automatica w plugin MediatR. se un handler lancia un'eccezione, questa viene catturata da questo pipeline behavior, che decide come loggarla e rilanciarla.
  * services.AddTransient(
         typeof(IPipelineBehavior<,>),
-        typeof(ExceptionBehavior<,>));
+        typeof(XXXBehavior<,>));
  */
 public sealed class ExceptionBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
