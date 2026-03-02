@@ -40,7 +40,8 @@ public sealed class TransactionBehavior<TRequest, TResponse>
     {
         var response = await next(); //handler eseguito, ma non ancora salvato su db
 
-        await _uow.SaveChangesAsync(ct);
+        await _uow.SaveChangesAsync(ct); //!!FA SAVECHANGES, QUINDI ORA SEE EfUnitOfWork.cs(qui accadra tutto il outboxpattern: register user + send email in 1 sola transazione, 100% secure affidabilità.)!!!!
+        //see User.cs  transactionbehavior.cs  efunitofwork.cs  outboxprocessor.cs
 
         return response;
     }

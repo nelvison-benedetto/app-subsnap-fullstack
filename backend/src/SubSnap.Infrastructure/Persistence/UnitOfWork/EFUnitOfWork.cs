@@ -21,21 +21,17 @@ public sealed class EFUnitOfWork : IUnitOfWork
     public async Task SaveChangesAsync(CancellationToken ct)
     {
 
-        //without OUTOFBOX pattern
+        //old without OUTOFBOX pattern
         //await _context.SaveChangesAsync(ct);
-        ////1. Collect aggregates
         //var aggregates = _context.ChangeTracker
         //    .Entries<AggregateRoot>()
         //    .Select(e => e.Entity)
         //    .Where(e => e.DomainEvents.Any())
         //    .ToList();
-        ////2. Extract events
         //var events = aggregates
         //    .SelectMany(a => a.DomainEvents)
         //    .ToList();
-        ////3. Clear events
         //aggregates.ForEach(a => a.ClearDomainEvents());
-        ////4. Publish
         //foreach (var domainEvent in events)
         //{
         //    await _mediator.Publish(domainEvent, ct);
@@ -48,7 +44,7 @@ public sealed class EFUnitOfWork : IUnitOfWork
         //extract domain events from tracked entities
         var domainEvents = _context.ChangeTracker
             .Entries<AggregateRoot>()  //tiene traccia di tutte le entità modificate
-            .SelectMany(e => e.Entity.DomainEvents)  //ottieni tutti gli eventi di dominio dalle entità modificate
+            .SelectMany(e => e.Entity.DomainEvents)  //ottieni tutti gli eventi di dominio dalle entità modificate. e.g. SEI ARRIVATO QUI DOPO UN await _userRepository.AddAsync(user, ct); 
             .ToList();
 
         //clear domain events

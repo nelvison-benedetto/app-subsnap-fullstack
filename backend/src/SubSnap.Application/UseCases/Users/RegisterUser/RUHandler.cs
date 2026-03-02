@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using MediatR;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.Persistence;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.Exceptions;
 using SubSnap.Core.Domain.ValueObjects;
-using MediatR;
+using System.Runtime.Intrinsics.X86;
 
 namespace SubSnap.Application.UseCases.Users.RegisterUser;
 
@@ -72,8 +73,11 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
             passwordHash
         );
         // 4️⃣ Persist
-        await _userRepository.AddAsync(user, ct);
-        //await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare! OLD, NOW CENTRALIZZATO IN transactionbehaviour.cs !!!
+        await _userRepository.AddAsync(user, ct);  //!!LO REGISTRO SOLO here,
+        //ORA IL SAVECHANGES ACCADE IN TransactionBehavior.cs. see now!
+        //see User.cs  transactionbehavior.cs efunitofwork.cs  outboxprocessor.cs
+
+        //await _unitOfWork.SaveChangesAsync(ct);  //sempre propagare il token!!serve e.g.se utente spegne il cellulare! OLD, now is in transactionbehaviour.cs
         return new RUResult(
             user.Id.Value,
             user.Email.Value

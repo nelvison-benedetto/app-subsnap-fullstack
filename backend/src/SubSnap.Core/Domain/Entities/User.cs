@@ -41,9 +41,10 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
         IsActive = true;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
-        Raise(new UserRegisteredEvent(Id));  //registra NUOVO DOMAIN EVENT (see aggregateroot.cs) alla creazione di questo nuovo user.
+        Raise(new UserRegisteredEvent(Id));  //!!registra NUOVO DOMAIN EVENT (see aggregateroot.cs) IN MEMORIA, quando crei this new user.  
+        //see User.cs  transactionbehavior.cs  efunitofwork.cs
     }
-    
+
     //internal void SetId(UserId id)  //IMPORTANTISSISMO! xk ti serve x obj entity-->domain obj
     //     //internal, solo .Infrastructure(stesso prj, assembly) puo usarlo!
     //{
@@ -52,7 +53,7 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
     //    Id = id;
     //    //utilizza anche file.Core / AssemblyInfo.cs
     //}
-    
+
     public void UpdateLastLogin()
     {
         LastLogin = DateTime.UtcNow;
