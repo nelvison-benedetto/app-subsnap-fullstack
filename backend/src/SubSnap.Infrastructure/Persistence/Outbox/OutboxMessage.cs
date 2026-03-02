@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SubSnap.Infrastructure.Persistence.Outbox;
+﻿namespace SubSnap.Infrastructure.Persistence.Outbox;
 
 /*
  * tabella su db. serve per persistence

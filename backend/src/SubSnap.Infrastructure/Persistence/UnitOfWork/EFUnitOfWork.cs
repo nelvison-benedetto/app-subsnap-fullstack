@@ -56,20 +56,19 @@ public sealed class EFUnitOfWork : IUnitOfWork
         //save domain events to outbox
         foreach (var domainEvent in domainEvents)
         {
-            var message = new OutboxMessage
+            var message = new OutboxMessage  //crei un nuovo obj per ciascun domain event trovato
             {
                 Id = Guid.NewGuid(),
                 Type = domainEvent.GetType().AssemblyQualifiedName!,  //CONVERT domain event -->  OUTBOX ROW type(outboxmessage.cs), in questo modo quando lo leggo posso capire di che tipo di evento si tratta e deserializzarlo correttamente. usi AssemblyQualifiedName non invece .Name (fallirebbe in produzione)!!
                 Payload = JsonSerializer.Serialize(
                     domainEvent,
                     domainEvent.GetType()),
-                //domain event diventa json salvato sul db.INFOO TODO
                 OccurredOnUtc = DateTime.UtcNow
             };
-            _context.OutboxMessages.Add(message);  //ADD TO DB row in tab OutboxMessage!!
+            _context.OutboxMessages.Add(message);  //ADD TO DB
         }
         //SINGLE TRANSACTION COMMIT: save both the state changes and the outbox messages together to ensure consistency!!
-        await _context.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync(ct);  //ORA FAI IL DEFINITIVO COMMIT, salvando persistendo l'user added e il/i outboxmessages added. TRANSAZIONE ATOMICA!!
 
         /*
          ora hai 

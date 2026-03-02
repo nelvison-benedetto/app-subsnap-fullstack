@@ -38,9 +38,9 @@ public sealed class OutboxProcessor : BackgroundService
     }
 
     protected override async Task ExecuteAsync(
-        CancellationToken stoppingToken)
+        CancellationToken ct)
     {
-        while (!stoppingToken.IsCancellationRequested)  //LOOP INFINITO che continua a leggere i messaggi dall'outbox finché il servizio è attivo (non viene shutdown dall'user)
+        while (!ct.IsCancellationRequested)  //LOOP INFINITO che continua a leggere i messaggi dall'outbox finché il servizio è attivo (finche non viene shutdown dall'user)
         {
             using var scope = _scopeFactory.CreateScope();  //crei scope manuale, xk backgrounservice è singleton, e applicationdbcontext è scoped, quindi devi creare scope manuale per risolverlo
 
@@ -51,29 +51,26 @@ public sealed class OutboxProcessor : BackgroundService
                 .Where(x => x.ProcessedOnUtc == null)
                 .Take(20)
                 .OrderBy(x => x.OccurredOnUtc)
-                .ToListAsync(stoppingToken);
+                .ToListAsync(ct);
             //lettura outbox, prendi i primi 20 messaggi non processati (processedOnUtc == null), così eviti di sovraccaricare il sistema se ci sono molti messaggi da processare
 
             foreach (var msg in messages)
             {
                 var type = Type.GetType(msg.Type)!;  //!!xk devi salvare AssemblyQualifiedName del tipo, così puoi deserializzare correttamente l'evento di dominio, anche se hai più eventi con lo stesso nome in assembly diversi. non .Name xk altrimenti in produzione fallirà!
 
-                var domainEvent =
-                    JsonSerializer.Deserialize(
-                        msg.Payload, type);
+                var domainEvent = JsonSerializer.Deserialize( msg.Payload, type );
                 //deserializzazione evento di dominio, così ricostruisci l'evento di dominio originale a partire dal payload JSON salvato nell'outbox
 
-                await _mediator.Publish(
-                    (INotification)domainEvent!,
-                    stoppingToken);
-                //publish evento di dominio usando MediatR, ora MediatR chiama UserRegisteredHandler
+                await _mediator.Publish( (INotification)domainEvent!, ct);
+                //publish evento di dominio usando MediatR, ora MediatR chiama UserRegisteredHandler.cs!!!
 
                 msg.ProcessedOnUtc = DateTime.UtcNow;  //lo marchi (see OutboxMessage.cs)
             }
 
-            await db.SaveChangesAsync(stoppingToken);
+            await db.SaveChangesAsync(ct);
 
-            await Task.Delay(2000, stoppingToken);  //!!POLLING OGNI 2 SEC
+            await Task.Delay(2000, ct);  //!!POLLING OGNI 2 SEC
+
         }
     }
 }

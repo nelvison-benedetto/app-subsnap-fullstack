@@ -13,7 +13,7 @@ namespace SubSnap.Infrastructure.DataLoaders;
 /*
  * NON SONO query parallele(quer1 - query2 ...tutte in parallelo. Db overload!!)! sono CUNCURRENT BATCHED (requests parallele -> 1 sola query ottimizzata! db happy!!), 
  * 
- * ors invece di :  await repo.GetSubscriptions(user.Id);
+ * ora invece di :  await repo.GetSubscriptions(user.Id);
  * fai (in handler o orchestrator): 
 var tasks = users.Select(u =>
     _subscriptionLoader.Load(u.Id, ct));
@@ -26,9 +26,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
     private readonly ILogger<SubscriptionBatchLoader> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;  //x leggere correlationId dal middlewre corrente
 
-    private readonly ConcurrentDictionary<Guid,
-        TaskCompletionSource<IReadOnlyList<Subscription>>> _pending
-            = new();
+    private readonly ConcurrentDictionary<Guid, TaskCompletionSource<IReadOnlyList<Subscription>>> _pending = new();
 
     private bool _scheduled;
     private readonly object _lock = new();
