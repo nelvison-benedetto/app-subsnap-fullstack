@@ -29,4 +29,4 @@
 //    }
 //}
 
-//non piu necessario. better ora uso OutboxProcessor.cs come DISPATCHER async outbox pattern.
+//OLD. non piu necessario. better ora uso OutboxProcessor.cs come DISPATCHER async outbox pattern.
