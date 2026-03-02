@@ -32,10 +32,19 @@ public sealed class ValidationBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
-    //quando fai await _mediator.Send(new RUCommand(...)); mediatr ricostruisce ValidationBehavior<RUCommand, RUResult>
-    //quindi dependencyinjection risolve IEnumerable<IValidator<RUCommand>>
-    //DUNQUE TROVA RegisterUserValidator : AbstractValidator<RUCommand>  (IL MIO VALIDATOR)
-    //E INIETTA l'interfaccia IValidator<RUCommand>
+    /*
+        When MediatR executes:
+        await _mediator.Send(new SomeCommand(...));
+        it builds the pipeline:
+        ValidationBehavior<SomeCommand, TResult>
+        The DI container automatically resolves:
+        IEnumerable<IValidator<SomeCommand>>
+        FluentValidation scans registered assemblies and finds
+        all validators implementing:  IValidator<SomeCommand>
+        Example:
+        RegisterUserValidator : AbstractValidator<RegisterUserCommand>
+        These validators are automatically injected here.
+     */
     //.net automaticamente trova tutti i validators collegati a X command (TRequest), e li inietta.
     //e.g. RUCommand (command usato in registeruservalidator.cs) --> trova RegisterUserValidator ( .api/validators/RegisterUserValidator.cs) e LO INIETTA!!
 
