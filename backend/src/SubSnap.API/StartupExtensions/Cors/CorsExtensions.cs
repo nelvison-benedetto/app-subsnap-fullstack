@@ -11,14 +11,14 @@ public static class CorsExtensions
             options.AddPolicy(CorsPolicyName, builder =>
             {
                 builder
-                    .AllowAnyOrigin()  //ovviamente in prod non va bene AllowAnyOrigin, ma usi e.g..WithOrigins("https://app.subsnap.com")
+                    .AllowAnyOrigin()  //TODO ovviamente in prod non va bene AllowAnyOrigin, ma usi e.g..WithOrigins("https://app.subsnap.com") 
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             });
         });
         return services;
     }
-    public static IApplicationBuilder UseCorsConfiguration(this IApplicationBuilder app)  //x uso
+    public static IApplicationBuilder UseCorsConfiguration( this IApplicationBuilder app )  //x uso
     {
         app.UseCors(CorsPolicyName);
         return app;

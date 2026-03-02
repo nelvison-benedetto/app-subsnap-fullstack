@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Controllers
 builder.Services.AddControllers();
 
-// Configurations
+//custom startup configs
 builder.Services.AddValidationConfiguration();
 builder.Services.AddCorsConfiguration();
 builder.Services.AddSwaggerConfiguration();
