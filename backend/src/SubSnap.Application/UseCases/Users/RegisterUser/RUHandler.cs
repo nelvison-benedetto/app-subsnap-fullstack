@@ -12,7 +12,8 @@ namespace SubSnap.Application.UseCases.Users.RegisterUser;
 //transazione controllata, orchestration pulita
 
 //public class RUHandler : IRUHandler 
-public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin MediatR(validazione automatica!) (works w fluentvalidation) see validationbehaviour.cs  dependencyinjection.cs validationextensions.cs
+public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin MediatR(validazione automatica!) (works w fluentvalidation)
+  //see validationbehaviour.cs  dependencyinjection.cs validationextensions.cs
 
 {
     private readonly IUserRepository _userRepository;
