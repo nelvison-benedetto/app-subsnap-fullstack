@@ -11,12 +11,13 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<User> Users => Set<User>();  //solo la root dell'aggregate deve essere esposto al dbset.
+    public DbSet<User> Users => Set<User>();  //solo la ROOT DELL'AGGREGATE deve essere esposto al dbset.
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();  //x dire a ef di creare tab OutboxMessages
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
+    //scansiona l'assembly. altrimenti dovresti fare a mano modelBuilder.ApplyConfiguration(new UserConfiguration());...(anche per tutte le altri xxxConfiguration.cs)
 
 }
