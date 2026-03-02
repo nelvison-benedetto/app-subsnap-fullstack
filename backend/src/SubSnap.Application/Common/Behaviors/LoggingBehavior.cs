@@ -25,6 +25,21 @@ TransactionBehavior
 ExceptionBehavior
    ↓
 Handler
+//plugin MediatR costruisce dinamicamente la pipeline usando reflrection, quindi cerca sermpe Handle(...) !!
+COME FUNZIONA CON NEXT/RETURN RESPONSE NELLA PIPELINE
+TransactionBehavior entra
+↓
+await next()
+    ↓
+    RUHandler.Handle()
+        AddAsync(user)
+        (NO SAVE)
+    ↑ ritorna
+↓
+SaveChangesAsync()   ← QUI
+↓
+response
+//quindi transactionbehavior circonda exceptionbehavior che circonda a sua volta handler!! cipolla.
  */
 
 public sealed class LoggingBehavior<TRequest, TResponse>
