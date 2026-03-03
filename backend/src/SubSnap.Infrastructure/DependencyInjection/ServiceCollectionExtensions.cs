@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Amazon.S3;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SubSnap.Application.Ports.Auth;
 using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Application.Ports.Persistence;
+using SubSnap.Application.Ports.Storage;
 using SubSnap.Infrastructure.Background;
 using SubSnap.Infrastructure.DataLoaders.Aggregates;
 using SubSnap.Infrastructure.DataLoaders.Batch;
+using SubSnap.Infrastructure.External.Storage;
 using SubSnap.Infrastructure.Identity.Services;
 using SubSnap.Infrastructure.Persistence.Context;
 using SubSnap.Infrastructure.Persistence.UnitOfWork;
@@ -55,6 +58,21 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserAggregateLoader, UserAggregateLoader>();
         services.AddScoped<ISubscriptionBatchLoader, SubscriptionBatchLoader>(); //addscoped bc 1 http req = 1 batch window
 
+
+        services.AddSingleton<IAmazonS3>(sp =>
+        {
+            var config = new AmazonS3Config
+            {
+                ServiceURL = configuration["ObjectStorage:Endpoint"],
+                ForcePathStyle = true
+            };
+            return new AmazonS3Client(
+                configuration["ObjectStorage:AccessKey"],
+                configuration["ObjectStorage:SecretKey"],
+                config);
+        });
+        services.AddScoped<IObjectStorageService,HetznerObjectStorageService>();
+        //see IObjectStorageService.cs HetznerObjectStorageService.cs UserMedia.cs xxxhandler.cs
 
         return services;
         //scoped: una nuova istanza per ogni richiesta HTTP, condivisa all’interno della stessa richiesta. Perfetto x DbContext e servizi che lavorano con esso.

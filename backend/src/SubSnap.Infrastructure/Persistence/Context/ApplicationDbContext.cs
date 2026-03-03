@@ -11,13 +11,16 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<User> Users => Set<User>();  //solo la ROOT DELL'AGGREGATE deve essere esposto al dbset.
+    //SOLO AGGREGATE ROOTS
+    public DbSet<User> Users => Set<User>();  //solo la ROOT DELL'AGGREGATE deve essere esposto al dbset. ora EF puo PUO TRACCIARE questa aggregate root. 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();  //x dire a ef di creare tab OutboxMessages
+    public DbSet<UserMedia> userMedias => Set<UserMedia>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        //prende assembly corrente -> trova tutte le classi IEntityTypeConfiguration<T> -> le esegue. trova tutte le tue xxxConfiguration.
     }
-    //scansiona l'assembly. altrimenti dovresti fare a mano modelBuilder.ApplyConfiguration(new UserConfiguration());...(anche per tutte le altri xxxConfiguration.cs)
+    //scansiona l'assembly, e dici come mappare domain->db. altrimenti dovresti fare a mano modelBuilder.ApplyConfiguration(new UserConfiguration());...(anche per tutte le altri xxxConfiguration.cs)
 
 }
