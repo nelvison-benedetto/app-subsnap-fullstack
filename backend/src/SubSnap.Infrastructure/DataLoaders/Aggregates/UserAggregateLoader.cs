@@ -13,6 +13,8 @@ namespace SubSnap.Infrastructure.DataLoaders.Aggregates;
  * 
  * xxxAggregateLoader NON conosce i BATCHLOADERS!! è solo un builder.
  * viene chiamato dall' handler.
+ * 
+see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionbatchloader.cs  userrepository.cs  GUSHandler.cs(top!)
  */
 public sealed class UserAggregateLoader : IUserAggregateLoader
 {

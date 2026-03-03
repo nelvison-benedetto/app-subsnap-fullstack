@@ -1,25 +1,10 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SubSnap.Application.UseCases.Users.GetUsersWithSubscriptions;
 
-/*
- Controller
-   ↓
-MediatR pipelin (behavior, transaction, ect...)
-   ↓
-GUSHandler   ← 🧠 orchestration
-   ↓
-BatchLoader  ← ⚡ performance
-   ↓
-EF Core
-   ↓
-DB
- */
+//wrappa l'handler, E' ENTRY POINT application!! è chiamato da plugin MediatR, dice 'Io sono il punto di ingresso dell’Application Layer per questo use case.'. 
+//QUINDI NEL CONTROLLER FAI  await _gusOrchestrator.Execute(ct);, NO await _gusOrchestrator.Execute(ct); xk poi difficile cambiare orchestrazione, MEGLIO SE IL CONTROLLER NON CONOSCE mediatr!!
+//Controller → Orchestrator → MediatR pipelibe behviors → Handler
 
 public sealed class GUSOrchestrator
 {
@@ -33,6 +18,6 @@ public sealed class GUSOrchestrator
     public Task<List<GUSResult>> Execute(
         CancellationToken ct = default)
     {
-        return _mediator.Send(new GUSCommand(), ct);
+        return _mediator.Send(new GUSCommand(), ct);  //QUI PARTE TUTTA LA PIPELINE mediatr cioe TUTTI I BEHAVIORS...fino all'handler!!
     }
 }

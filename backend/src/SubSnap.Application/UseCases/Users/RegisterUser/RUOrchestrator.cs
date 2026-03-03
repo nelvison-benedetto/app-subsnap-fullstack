@@ -1,9 +1,22 @@
-﻿namespace SubSnap.Application.UseCases.Users.RegisterUser;
+﻿using MediatR;
 
-//DA USARE SOLO QUANDO HANDLER DIVENTA DIFFICILE
+namespace SubSnap.Application.UseCases.Users.RegisterUser;
+
+//wrappa l'handler, E' ENTRY POINT application!! è chiamato da plugin MediatR, dice 'Io sono il punto di ingresso dell’Application Layer per questo use case.'. 
+//QUINDI NEL CONTROLLER FAI  await _gusOrchestrator.Execute(ct);, NO await _gusOrchestrator.Execute(ct); xk poi difficile cambiare orchestrazione, MEGLIO SE IL CONTROLLER NON CONOSCE mediatr!!
+////Controller → Orchestrator → MediatR pipelibe behviors → Handler
 public sealed class RUOrchestrator
 {
-    /*
-        lo usi solo se quando Handler(che attualmente lavora anche come orchestrator) inizia a mostrare difficoltà di coordination perche e.g.supera >40-60rows / il flow (di Handler.cs) diventa molto lungo.
-    */
+    private readonly IMediator _mediator;
+
+    public RUOrchestrator(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+    public Task<RUResult> Execute(
+        RUCommand command,
+        CancellationToken ct = default)
+    {
+        return _mediator.Send(command, ct); //Delegates execution to MediatR pipeline
+    }
 }

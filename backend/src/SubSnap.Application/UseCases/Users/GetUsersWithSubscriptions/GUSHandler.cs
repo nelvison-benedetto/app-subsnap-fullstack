@@ -4,22 +4,28 @@ using SubSnap.Core.Domain.Aggregates;
 
 namespace SubSnap.Application.UseCases.Users.GetUsersWithSubscriptions;
 /*
- Controller
-   ↓
-MediatR pipelin (behavior, transaction, ect...)
-   ↓
-GUSHandler   ← 🧠 orchestration
-   ↓
-BatchLoader  ← ⚡ performance
-   ↓
+HTTP
+ ↓
+Controller
+ ↓
+GUSOrchestrator   ⭐ entrypoint application
+ ↓
+IMediator.Send
+ ↓
+Pipeline Behaviors
+ ↓
+GUSHandler        ⭐ orchestration tecnica
+ ↓
+BatchLoader
+ ↓
 EF Core
-   ↓
-DB
+ ↓
+Database
  */
 public sealed class GUSHandler
     : IRequestHandler<GUSCommand, List<GUSResult>>
 {
-    private readonly  _context;
+    private readonly ApplicationDbContext _context;
     private readonly ISubscriptionBatchLoader _batchLoader;
 
     public GUSHandler(
@@ -67,4 +73,5 @@ public sealed class GUSHandler
                     a.Subscriptions.Count))
             .ToList();
     }
+
 }

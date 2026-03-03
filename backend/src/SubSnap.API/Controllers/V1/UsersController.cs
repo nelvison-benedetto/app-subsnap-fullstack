@@ -16,19 +16,21 @@ public class UsersController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IValidator<RUCommand> _validator;
     //private readonly IRUHandler _ruHandler;
-    private readonly IMediator _mediator;
+
+    //private readonly IMediator _mediator;
+    private readonly RUOrchestrator _orchestrator;
 
     public UsersController( 
         IMapper mapper, 
         IValidator<RUCommand> validator,
         //IRUHandler ruHandler
-        IMediator mediator
+        RUOrchestrator orchestrator
     )
     {
         _mapper = mapper;
         _validator = validator;
-        //_ruHandler = ruHandler;
-        _mediator = mediator;
+        //_mediator = mediator;
+        _orchestrator = orchestrator;
     }
 
     [HttpPost("register")]
@@ -41,7 +43,9 @@ public class UsersController : ControllerBase
         //await ValidatorHelper.ValidateCommandAsync(_validator, command); E' POCO CLEAN (il controller non dovrebbe conoscere la validation) ORA INVECE USO VALIDAZIONE AUTOMATICA w
         //PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code) + plugin fluentvalidation. see more validationbehaviour.cs dependencyinjection.cs
         //var result = await _ruHandler.HandleAsync(command, ct);  OLD w IRUHandler
-        var result = await _mediator.Send(command, ct);  //x plugin MediatR
+        //var result = await _mediator.Send(command, ct);  //x plugin MediatR
+        var result = await _orchestrator.Execute(command, ct);  //Controller → Orchestrator → MediatR pipelibe behviors → Handler
+
         var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<RegisterUserResponse>.Ok(response));
         //qualsiasi cosa tu metta dentro Ok(...) verrà serializzata in JSON come body della risposta HTTP
