@@ -53,10 +53,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
 
         var key = userId.Value;
 
-        var tcs = _pending.GetOrAdd(
-            key,
-            _ => new TaskCompletionSource<IReadOnlyList<Subscription>>(
-                TaskCreationOptions.RunContinuationsAsynchronously));
+        var tcs = _pending.GetOrAdd( key, _ => new TaskCompletionSource<IReadOnlyList<Subscription>>(TaskCreationOptions.RunContinuationsAsynchronously));
 
         ScheduleExecution();
 

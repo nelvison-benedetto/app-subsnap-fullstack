@@ -37,7 +37,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         var subscriptionsTask = LoadSubscriptions(userId, ct); //ritorna la lista di Subscription
 
         await Task.WhenAll(subscriptionsTask);  //run queries in parallelo!!
-            //Thread A → DbContext #1 → Users
+            //Thread A → DbContext(creato in LoadSubscriptions()??) #1 → Users
             //Thread B → DbContext #2 → Subscriptions
             //db lavora meglio perche ha query piccole su threads diversi, non 1 mega join!!
 
