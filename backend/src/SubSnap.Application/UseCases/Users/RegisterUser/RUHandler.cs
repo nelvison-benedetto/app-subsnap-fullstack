@@ -50,7 +50,7 @@ public sealed class RUHandler : IRequestHandler<RUCommand, RUResult>  //x plugin
 
 {
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;  //non piu necessario, ora centralizzato in transactionbehvior.cs
+    private readonly IUnitOfWork _unitOfWork;  //non piu necessario INFOOO, ora centralizzato in transactionbehvior.cs
     private readonly IPasswordHasherService _passwordHasherService;
 
     public RUHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IPasswordHasherService passwordHasherService)
