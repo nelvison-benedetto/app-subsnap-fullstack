@@ -29,6 +29,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
     private readonly IHttpContextAccessor _httpContextAccessor;  //x leggere correlationId dal middlewre corrente
 
     private readonly ConcurrentDictionary<Guid, TaskCompletionSource<IReadOnlyList<Subscription>>> _pending = new();
+    //TaskCompletionSource è un promise manuale, tu prometti 'ti darò il risultato piu tardi'.
 
     private bool _scheduled;
     private readonly object _lock = new();
@@ -43,6 +44,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
     }
+
     public Task<IReadOnlyList<Subscription>> Load(
         UserId userId,
         CancellationToken ct = default)
@@ -50,10 +52,12 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         _logger.LogDebug(
             "Batch request queued for UserId {UserId}",
             userId.Value);
+        //logging ok.
 
-        var key = userId.Value;
+        var key = userId.Value; //serve per raggruppare le req duplicate
 
         var tcs = _pending.GetOrAdd( key, _ => new TaskCompletionSource<IReadOnlyList<Subscription>>(TaskCreationOptions.RunContinuationsAsynchronously));
+        //dice 'se già qualcuno ha chiesto questo user → riusa promessa, altrimenti creala.'
 
         ScheduleExecution();
 
