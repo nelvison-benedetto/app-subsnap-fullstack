@@ -59,7 +59,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
         var tcs = _pending.GetOrAdd( key, _ => new TaskCompletionSource<IReadOnlyList<Subscription>>(TaskCreationOptions.RunContinuationsAsynchronously));
         //dice 'se già qualcuno ha chiesto questo user → riusa promessa, altrimenti creala.'
 
-        ScheduleExecution();
+        ScheduleExecution();  //serve ad evitare 100 req -> 100 query
 
         return tcs.Task;
     }
