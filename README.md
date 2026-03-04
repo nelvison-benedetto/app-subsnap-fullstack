@@ -1,6 +1,6 @@
 ## SUBSNAP BACKEND – ARCHITECTURE & ENGINEERING OVERVIEW
 
-Author: Nelvison Benedetto
+Author: Nelvison Benedetto</br>
 Project: SubSnap Backend
 Platform: ASP.NET Core (.NET 8)
 Database: PostgreSQL
@@ -20,6 +20,7 @@ Contains:
 DOMAIN [Entities, Aggregates, Value Objects, Events, Domain Rules, ...].
 
 references: NONE!!
+
 ---
 
 ### .APPLICATION layer
@@ -27,6 +28,7 @@ Contains:
 Behaviors(MediatR pipeline), DependencyInjection (only for .application level), Ports (interfaces), UseCases(slices e.g.Login, Logout,...)(each slice contains Orchestrator(the TRUE entry point), Handler, Command, Result, Policies, Loaders).
 
 references: .Core
+
 ---
 
 ### .INFRASTRUCTURE layer
@@ -35,6 +37,7 @@ Contains:
 EF Core repositories, JWT generation, Password hashing, Entities Configuration, ApplicationDbContext, UnitofWork, DataLoaders(Aggregates & Batch Loaders), DependencyInjection (only for .infrastructure level), Storage(for Hetzner Object media files), OutBox Processor.
 
 references: .Application, .Core
+
 ---
 
 ### .API layer
@@ -44,6 +47,8 @@ Contains:
 Requests & Responses (will match w Command & Result of the target UseCase), Mapping(x auto match request->command & result->response), ApiResult & ApiError (wrapper, for uniformity when return the response to the client), Controllers(don't know MediatR, they call the orchestrator of target usecase), Filters, Middleware(for global exception and correlationid for logging), Startup Extensions (authentication, authorization, correlationid, cors, healthchecks, swagger, validation), Validators(usa plugin Fluent Validator, for rules e.g. email must not be empty), Versioning, Program.cs.
 
 references: .Application, .Infrastructure
+
+---
 
 ### Techniques & Patterns
 
