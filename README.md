@@ -16,7 +16,7 @@ SubSnap is intentionally designed following modern enterprise backend practices 
 ### .CORE layer
 Contains pure business logic (no framework logic!), must be runnable without external references.
 
-Contains:
+**Contains**:
 DOMAIN [Entities, Aggregates, Value Objects, Events, Domain Rules, ...].
 
 references: NONE!!
@@ -24,7 +24,7 @@ references: NONE!!
 ---
 
 ### .APPLICATION layer
-Contains:
+**Contains**:
 Behaviors(MediatR pipeline), DependencyInjection (only for .application level), Ports (interfaces), UseCases(slices e.g.Login, Logout,...)(each slice contains Orchestrator(the TRUE entry point), Handler, Command, Result, Policies, Loaders).
 
 references: .Core
@@ -33,7 +33,7 @@ references: .Core
 
 ### .INFRASTRUCTURE layer
 Technical implementations.
-Contains:
+**Contains**:
 EF Core repositories, JWT generation, Password hashing, Entities Configuration, ApplicationDbContext, UnitofWork, DataLoaders(Aggregates & Batch Loaders), DependencyInjection (only for .infrastructure level), Storage(for Hetzner Object media files), OutBox Processor.
 
 references: .Application, .Core
@@ -43,7 +43,7 @@ references: .Application, .Core
 ### .API layer
 HTTP API only.
 
-Contains:
+**Contains**:
 Requests & Responses (will match w Command & Result of the target UseCase), Mapping(x auto match request->command & result->response), ApiResult & ApiError (wrapper, for uniformity when return the response to the client), Controllers(don't know MediatR, they call the orchestrator of target usecase), Filters, Middleware(for global exception and correlationid for logging), Startup Extensions (authentication, authorization, correlationid, cors, healthchecks, swagger, validation), Validators(usa plugin Fluent Validator, for rules e.g. email must not be empty), Versioning, Program.cs.
 
 references: .Application, .Infrastructure
