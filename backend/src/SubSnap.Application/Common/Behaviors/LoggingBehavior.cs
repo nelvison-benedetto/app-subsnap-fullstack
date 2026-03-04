@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace SubSnap.Application.Common.Behaviors;
 
+//see loggingbehavior.cs correlationidmiddleware.cs
 /*
 ora ogni volta che un handler viene usato nel log appare 
         Handling RegisterUserCommand
