@@ -231,7 +231,7 @@ BEFORE UPDATE ON users
 FOR EACH ROW
 EXECUTE FUNCTION set_updatedat_users();
 
-<span style="color:gray">Trigger updatedat per subscriptions</span>
+-- Trigger updatedat per subscriptions
 CREATE OR REPLACE FUNCTION set_updatedat_subscriptions()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -245,7 +245,7 @@ BEFORE UPDATE ON subscriptions
 FOR EACH ROW
 EXECUTE FUNCTION set_updatedat_subscriptions();
 
-<span style="color:gray">Trigger updatedat per sharedlinks</span>
+-- Trigger updatedat per sharedlinks
 CREATE OR REPLACE FUNCTION set_updatedat_sharedlinks()
 RETURNS TRIGGER AS $$
 BEGIN
