@@ -24,7 +24,7 @@ Questo layer contiene **pure business logic** e il **core domain model**.
 **Contains**:
 DOMAIN [Entities, Aggregates, Value Objects, Events, Domain Rules, ...].
 
-references: NONE
+**References**: NONE
 
 ---
 
@@ -35,7 +35,7 @@ Non contiene logica infrastrutturale, ma definisce contratti (Ports) che dovrann
 **Contains**:
 Behaviors(MediatR pipeline), DependencyInjection (only for .application level), Ports (interfaces), UseCases(slices e.g.Login, Logout,...)(each slice contains Orchestrator(the TRUE entry point), Handler, Command, Result, Policies, Loaders).
 
-references: .Core
+**References**: .Core
 
 ---
 
@@ -46,7 +46,7 @@ Implementa le interfacce (Ports) definite nell’Application layer ed è responsabi
 **Contains**:
 EF Core repositories, JWT generation, Password hashing, Entities Configuration, ApplicationDbContext, UnitofWork, DataLoaders(Aggregates & Batch Loaders), DependencyInjection (only for .infrastructure level), Storage(for Hetzner Object media files), OutBox Processor.
 
-references: .Application, .Core
+**References**: .Application, .Core
 
 ---
 
@@ -58,7 +58,7 @@ Invocano invece l’Orchestrator del relativo Use Case, mantenendo il layer HTTP s
 **Contains**:
 Requests & Responses (will match w Command & Result of the target UseCase), Mapping(x auto match request->command & result->response), ApiResult & ApiError (wrapper, for uniformity when return the response to the client), Controllers(don't know MediatR, they call the orchestrator of target usecase), Filters, Middleware(for global exception and correlationid for logging), Startup Extensions (authentication, authorization, correlationid, cors, healthchecks, swagger, validation), Validators(usa plugin Fluent Validator, for rules e.g. email must not be empty), Versioning, Program.cs.
 
-references: .Application, .Infrastructure
+**References**: .Application, .Infrastructure
 
 ---
 
@@ -66,8 +66,10 @@ references: .Application, .Infrastructure
 
 - **Domain-First**: the domain model (in .Core) represents the source of truth, cosi il databse è scollegato(facilmente sostituibile!) ed non è trattato come system fundation (approach Db-First).
 - **Clean Architecture**: project suddiviso in layers .API .Application .Infrastructure .Core, e le loro references. 
-- **Domain Driven Design (DDD)**: 
-- **Boundaries tra Assemblies(projects)**: .applications/ports qui vengono definiti i contratti, la vero implementazione è dentro .infrastructure e.g.IUserRepository -> UserRepository, in servicecollectionextensions.cs setti che qundo chiami l'interfaccia automaticamente viene chiamata l'implementazione, obbligatorio perche un prj non deve conosce le implementazioni dell'altro prj, ma solo le interfaccie: i boundaries sono rispettati (e i tests sono clean).
+- **Domain Driven Design (DDD)**: la logica di business è incapsulata direttamente nel modello di dominio, evitando così logica dispersa nei servizi applicativi.
+- **Boundaries tra Assemblies(projects)**: .applications/ports qui vengono definiti i contratti, la vero implementazione è dentro .infrastructure e.g.IUserRepository -> UserRepository, la risoluzione delle dipendenze avviene in servicecollectionextensions.cs così quando chiami l'interfaccia automaticamente viene chiamata l'implementazione, obbligatorio perche un prj non deve conosce le implementazioni dell'altro prj, ma solo le interfaccie: i boundaries sono rispettati (e i tests sono clean).
+- Mapping request->command & result->response nel controller: grazie a plugin AutoMapper converto i dati ricevuti dal client in type xxRequest e lo converto in type xxCommand, nel file mapping e.g.requesttocommandprofile.cs non devi esplicitare come avviene la conversione SE i types & names matchano perfettamente e SE non vengono usati Value Objects (e.g.UserId). 
+- Api Result & Api Error: la risposta che riceverà il client sara SEMPRE con la STESSA struttura, per qualsiasi tipo di risposta (200/201/404/...).
 - **MediatR & Pipeline Bahviors**: plugin mediatr lavora come dispatcher, dal controller chiami l'orchestrator dello target slice usecase, e l'orchestrator fa partire la pipeline di behaviors controller -> orchestrator-> validationbehavior.cs -> loggingbehavior.cs -> performancebehavior.cs -> transactionbehavior.cs -> exceptionbehavior.cs -> handler target, quindi sono a 'cipolla'(dal controller penetri fino in fondo e poi torni in superfice)!
 - **Unit Of Work Pattern**: solo transactionbehavior.cs chiama l'uow, che centralizza il SaveChangesAsync() al ritorno verso superfice dei dati elaborati.
 - **Vertical Slice Architecture**: ogni 'usecase' è uno slice isolato, ogni slice si comporta come un mini microservice e.g. 
@@ -86,8 +88,8 @@ UseCases/Auth/Login/
 - **Domain Events**: rappresenta un'evento che accade quando succede qualcosa e.g UserRegisteredEvent.cs usato da UserRegisteredHandler.cs che puo fare per esempio logica di invio di email di benvenuto. 
 - **Outbox Pattern (reliable events)**: per assicurarsi di e.g registrare utente + inviare email in una 1 sola transazione(COMMIT) (altrimenti magari la registrazione user ha successo ed è salvato su db, ma poi l'invio email fallisce). quindi Save Aggregate -> Save OutBox message -> COMMIT(salvi su db), dopodiche il background worker outboxprocessor.cs sempre attivo in modalità polling ogni 2sec legge ultime 20 righe della tabella db  outboxmessage (solo quelli non ancora done) e pubblica quegli eventi (e.g. invio email di benvenuto)!
 - **Observability & Logging**: sempre chiaro logging di cosa è appena successo, ogni log fornito di chiara descrizione e di correlationId per poter facilmente tracciare cosa succede in real-time. see loggingbehavior.cs correlationidmiddleware.cs
-- **Security**: jwt tokens, access tokens, refresh tokens, jwt claims
-- **Media Upload**: su tab db usermedia salvo solo i paths, i media files che l'utente carica vengono salvati su Hetzner Object.
+- **Security**: il sistema di auth si basa su JWT(Json Web Tokens) dunque utilizzo access tokens(breve durata), refresh tokens(lunga durata) e jwt claims.
+- **Media Upload**: su tab db usermedia sul db salvo solo i metadati, i file vengono archiviati su Hetzner Object storage.
 
 ## Perché questa architettura è scalabile
 
@@ -124,7 +126,7 @@ ReactJs, Typescript, TailwindCSS, React-Query, React-Redux, React-Router, DaisyU
 -- Abilita estensione per UUID
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
-<span style="color:gray">Tabella users</span>
+-- Tabella users
 CREATE TABLE users (
     id UUID NOT NULL DEFAULT gen_random_uuid(),
     email VARCHAR(255) NOT NULL,
@@ -138,7 +140,7 @@ CREATE TABLE users (
     CONSTRAINT uq_users_email UNIQUE (email)
 );
 
-<span style="color:gray">Tabella refreshtokens</span>
+-- Tabella refreshtokens
 CREATE TABLE refreshtokens (
     id UUID NOT NULL DEFAULT gen_random_uuid(),
     userid UUID NOT NULL,
@@ -154,7 +156,7 @@ CREATE TABLE refreshtokens (
 
 CREATE INDEX ix_refreshtokens_userid ON refreshtokens(userid);
 
-<span style="color:gray">Tabella subscriptions</span>
+-- Tabella subscriptions
 CREATE TABLE subscriptions (
     id UUID NOT NULL DEFAULT gen_random_uuid(),
     userid UUID NOT NULL,
@@ -173,7 +175,7 @@ CREATE TABLE subscriptions (
 
 CREATE INDEX ix_subscriptions_userid ON subscriptions(userid);
 
-<span style="color:gray">Tabella subscriptionhistories</span>
+-- Tabella subscriptionhistories
 CREATE TABLE subscriptionhistories (
     id UUID NOT NULL DEFAULT gen_random_uuid(),
     subscriptionid UUID NOT NULL,
@@ -188,7 +190,7 @@ CREATE TABLE subscriptionhistories (
 
 CREATE INDEX ix_subscriptionhistories_subscriptionid ON subscriptionhistories(subscriptionid);
 
-<span style="color:gray">Tabella sharedlinks</span>
+-- Tabella sharedlinks
 CREATE TABLE sharedlinks (
     id UUID NOT NULL DEFAULT gen_random_uuid(),
     userid UUID NOT NULL,
@@ -204,7 +206,7 @@ CREATE TABLE sharedlinks (
 
 CREATE INDEX ix_sharedlinks_userid ON sharedlinks(userid);
 
-<span style="color:gray">Trigger updatedat per users</span>
+-- Trigger updatedat per users
 CREATE OR REPLACE FUNCTION set_updatedat_users()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -246,7 +248,7 @@ BEFORE UPDATE ON sharedlinks
 FOR EACH ROW
 EXECUTE FUNCTION set_updatedat_sharedlinks();
 
-<span style="color:gray">Tabella outboxmessages (x OUTBOX PATTERN (e.g.save user + send email(domain event) = 1 transazione</span>
+-- Tabella outboxmessages (x OUTBOX PATTERN (e.g.save user + send email(domain event) = 1 transazione
 CREATE TABLE outboxmessages (
     id UUID NOT NULL,
     type TEXT NOT NULL,
