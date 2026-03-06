@@ -53,7 +53,7 @@ public class UserRepository : IUserRepository
                     refreshToken,
                     new PasswordHash(rt.Token)),
                 ct);
-        //non sarebbe correttissimo x DDD xk sto usando un service APPLICATIVO dentro un repository!! pero here è accettabile xk la query db dipende dal hash verification. anche uber staff fa cosi.
+        //non sarebbe correttissimo x DDD xk sto usando un service APPLICATIVO dentro un repository!! pero here è accettabile xk la query db dipende dal hash verification. cmnq ok per ora.
         if (token is null)
             return null;
 
