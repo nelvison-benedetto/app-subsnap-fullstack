@@ -12,5 +12,5 @@ public interface IObjectStorageService
         string contentType,
         CancellationToken ct);
 
-    Task DeleteAsync(string key, CancellationToken ct);
+    //Task DeleteAsync(string key, CancellationToken ct);
 }

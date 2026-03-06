@@ -67,7 +67,7 @@ public sealed class LoginHandler : IRequestHandler<LoginCommand, LoginResult> //
     {
         var user = await _loader.Load(cmd.Email, ct)
             ?? throw new UnauthorizedAccessException();
-        _passwordPolicy.EnsureValid(cmd.PlainPassword, user);
+        _passwordPolicy.EnsureValid(cmd.Password, user);  //plain psw
         var access = _jwt.GenerateAccessToken(user);
         var refreshRaw = _jwt.GenerateRefreshToken();
         var refreshHash = _hasher.Hash(refreshRaw);

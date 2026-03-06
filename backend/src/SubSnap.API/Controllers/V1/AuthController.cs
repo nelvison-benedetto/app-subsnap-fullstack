@@ -20,24 +20,27 @@ public class AuthController : ControllerBase
 {
     //private readonly AuthHandler _authHandler;
     private readonly IMapper _mapper;
-    //private readonly ILoginHandler _loginHandler;
-    //private readonly ILogoutHandler _logoutHandler;
-    //private readonly IRTHandler _rtHandler;
-    private readonly IMediator _mediator;
+
+    //private readonly IMediator _mediator;  //il controller non deve conosce mediatr
+    private readonly LoginOrchestrator _loginOrchestrator;
+    private readonly LogoutOrchestrator _logoutOrchestrator;
+    private readonly RTOrchestrator _rtOrchestrator;
+
     public AuthController(
         IMapper mapper,
-        IMediator mediator
-        //ILoginHandler loginHandler,
-        //ILogoutHandler logoutHandler,
-        //IRTHandler rtHandler
+        //IMediator mediator
+        LoginOrchestrator loginOrchestrator,
+        LogoutOrchestrator logoutOrchestrator,
+        RTOrchestrator rTOrchestrator
     )
     {
         //_authHandler = authHandler;
         _mapper = mapper;
-        _mediator = mediator;
-        //_loginHandler = loginHandler;
-        //_logoutHandler = logoutHandler;
-        //_rtHandler = rtHandler;
+        //_mediator = mediator;
+        _loginOrchestrator = loginOrchestrator;
+        _logoutOrchestrator = logoutOrchestrator;
+        _rtOrchestrator = rTOrchestrator;
+
     }
 
     [HttpPost("login")]
@@ -48,7 +51,8 @@ public class AuthController : ControllerBase
         //var command = new LoginCommand( new Email(request.Email), request.Password );  oppure meglio usi il mapper per essere pulito .API.mapping/
         var command = _mapper.Map<LoginCommand>(request);  //more info in .API.mapping/
         //var result = await _loginHandler.HandleAsync(command, ct);  //OLD w ILoginHandler
-        var result = await _mediator.Send(command, ct);  //x plugin MediatR
+        //var result = await _mediator.Send(command, ct);  //x plugin MediatR
+        var result = await _loginOrchestrator.Execute(command, ct);
         var response = _mapper.Map<LoginResponseAuth>(result);
         //return Ok(ApiResult<object>.Ok(new
         //{
@@ -74,7 +78,8 @@ public class AuthController : ControllerBase
             request.RefreshToken
         );  //qui non uso il mapper xk non hanno un match diretto (in LogoutCommand ho anche Userid che lo trovo here non mi arriva direttamente da http)
         //await _logoutHandler.HandleAsync(command, ct); OLD w ILogoutHandler
-        await _mediator.Send(command, ct);  //x plugin MediatR
+        //await _mediator.Send(command, ct);  //x plugin MediatR
+        await _logoutOrchestrator.Execute(command, ct);
         return NoContent();  //PERFECT REST!
     }
 
@@ -86,7 +91,8 @@ public class AuthController : ControllerBase
         //    await _authHandler.RefreshAsync(request.RefreshToken, ct);
         var command = _mapper.Map<RTCommand>(request);
         //var result = await _rtHandler.HandleAsync(command, ct);  OLD w IRTHandler
-        var result = await _mediator.Send(command, ct);  //x plugin MediatR
+        //var result = await _mediator.Send(command, ct);  //x plugin MediatR
+        var result = await _rtOrchestrator.Execute(command, ct);
         var response = _mapper.Map<RefreshTokenResponseAuth>(result);
         //return Ok(ApiResult<object>.Ok(new
         //{

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace SubSnap.Application.UseCases.Auth.RefreshToken;
 
-//DA USARE SOLO QUANDO HANDLER DIVENTA DIFFICILE
 public sealed class RTOrchestrator
 {
-    /*
-        lo usi solo se quando Handler(che attualmente lavora anche come orchestrator) inizia a mostrare difficoltà di coordination perche e.g.supera >40-60rows / il flow (di Handler.cs) diventa molto lungo.
-    */
+    private readonly IMediator _mediator;
+    public RTOrchestrator(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    public Task<RTResult> Execute(RTCommand command, CancellationToken ct) {
+        return _mediator.Send(command, ct);
+    }
 }

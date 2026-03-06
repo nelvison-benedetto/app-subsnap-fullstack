@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace SubSnap.Application.UseCases.Auth.Logout;
 
-//DA USARE SOLO QUANDO HANDLER DIVENTA DIFFICILE
 public sealed class LogoutOrchestrator
 {
-    /*
-        lo usi solo se quando Handler(che attualmente lavora anche come orchestrator) inizia a mostrare difficoltà di coordination perche e.g.supera >40-60rows / il flow (di Handler.cs) diventa molto lungo.
-    */
+    private readonly IMediator _mediator;
+    public LogoutOrchestrator(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    public Task Execute(LogoutCommand command, CancellationToken ct = default) {
+        return _mediator.Send(command, ct);
+    }
 }

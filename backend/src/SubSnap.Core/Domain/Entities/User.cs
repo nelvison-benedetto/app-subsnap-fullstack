@@ -67,7 +67,8 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
         //string providedToken, 
         //IPasswordHasherService hasher,  WRONG domain non deve conoscere servizi esterni, il domain non deve hasharare! deve solo sapere se matcha.
 
-        Func<string, bool> tokenMatcher)  //vero DDD (.domain non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct))!
+        Func<string, bool> tokenMatcher
+    )  //vero DDD (.domain non conosce infrastructure, non conosce plugin, gli arriva solo una regola(funct))!
     {
         return _refreshTokens
             .FirstOrDefault(rt =>
@@ -81,7 +82,6 @@ public class User : AggregateRoot  //aggregateroot x domain events, ora User (l'
     {
         if (!token.IsActive())
             throw new InvalidOperationException("Invalid refresh token");
-
         token.Revoke();
     }
 

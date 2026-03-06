@@ -18,19 +18,19 @@ public class UsersController : ControllerBase
     //private readonly IRUHandler _ruHandler;
 
     //private readonly IMediator _mediator;
-    private readonly RUOrchestrator _orchestrator;
+    private readonly RUOrchestrator _ruOrchestrator;
 
     public UsersController( 
         IMapper mapper, 
         IValidator<RUCommand> validator,
         //IRUHandler ruHandler
-        RUOrchestrator orchestrator
+        RUOrchestrator ruOrchestrator
     )
     {
         _mapper = mapper;
         _validator = validator;
         //_mediator = mediator;
-        _orchestrator = orchestrator;
+        _ruOrchestrator = ruOrchestrator;
     }
 
     [HttpPost("register")]
@@ -44,7 +44,7 @@ public class UsersController : ControllerBase
         //PLUGIN MediatR (x validazione automatica, per non dover ogni volta esplicitare nel code) + plugin fluentvalidation. see more validationbehaviour.cs dependencyinjection.cs
         //var result = await _ruHandler.HandleAsync(command, ct);  OLD w IRUHandler
         //var result = await _mediator.Send(command, ct);  //x plugin MediatR
-        var result = await _orchestrator.Execute(command, ct);  //Controller → Orchestrator → MediatR pipelibe behviors → Handler
+        var result = await _ruOrchestrator.Execute(command, ct);  //Controller → Orchestrator → MediatR pipelibe behviors → Handler
 
         var response = _mapper.Map<RegisterUserResponse>(result);  //see .api/mapping/resulttoresponseprofile.cs
         return Ok(ApiResult<RegisterUserResponse>.Ok(response));
