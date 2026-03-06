@@ -61,7 +61,7 @@ public sealed class LogoutHandler : IRequestHandler<LogoutCommand> //x plugin Me
             user);
 
         user.RevokeRefreshToken(token);
-        await _uow.SaveChangesAsync(ct);
+        //await _uow.SaveChangesAsync(ct); lo faccio nel transactionbehavior.cs durante la risalita verso il controller
     }
 
 }

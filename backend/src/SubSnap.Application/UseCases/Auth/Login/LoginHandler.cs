@@ -72,8 +72,8 @@ public sealed class LoginHandler : IRequestHandler<LoginCommand, LoginResult> //
         var refreshRaw = _jwt.GenerateRefreshToken();
         var refreshHash = _hasher.Hash(refreshRaw);
         var expiry = DateTime.UtcNow.AddDays(30);
-        user.AddRefreshToken(refreshHash.Value, expiry);
-        await _uow.SaveChangesAsync(ct);  //propaga il cancellation token!!
+        user.AddRefreshToken(refreshHash.Value, expiry);  //!top!
+        //await _uow.SaveChangesAsync(ct);  //lo faccio automaticamente gia nel transactionbehavior.cs, durante la risalita verso in controller. ct ce l'hoha gia il transactionbehavior.
         return new(access, refreshRaw);
     }
     

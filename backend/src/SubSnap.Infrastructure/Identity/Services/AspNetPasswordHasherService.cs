@@ -10,8 +10,8 @@ public class AspNetPasswordHasherService : IPasswordHasherService
 
     public PasswordHash Hash(string plainPassword)
     {
-        var hash = _hasher.HashPassword(null!, plainPassword);
-        return new PasswordHash(hash);
+        var hash = _hasher.HashPassword(null!, plainPassword);  //firma reale è TUuser user, string password. null! significa 'so che sto passando null, non generare warning giallo'.
+        return new PasswordHash(hash);  //validation
     }
 
     public bool Verify(string plainPassword, PasswordHash passwordHash)
