@@ -56,10 +56,10 @@ public class UserRepository : IUserRepository
         //non sarebbe correttissimo x DDD xk sto usando un service APPLICATIVO dentro un repository!! pero here è accettabile xk la query db dipende dal hash verification. cmnq ok per ora.
         if (token is null)
             return null;
-
+        //ora hai un token valido, devi trovare il user collegato
         return await _context.Users
             .FirstOrDefaultAsync(
-                u => u.Id == EF.Property<UserId>(token, "UserId"),
+                u => u.Id == EF.Property<UserId>(token, "UserId"),  //legge la shadow key!
                 ct);
     }
 
