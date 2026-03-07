@@ -5,6 +5,39 @@ using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Application.UseCases.Auth.RefreshToken;
 
+/*
+ * quando fai nel usercontroller.cs
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
+ Controller
+   ↓
+ValidationBehavior
+   ↓
+LoggingBehavior
+   ↓
+PerformanceBehavior
+   ↓
+TransactionBehavior
+   ↓
+ExceptionBehavior
+   ↓
+Handler
+//plugin MediatR costruisce dinamicamente la pipeline usando reflrection, quindi cerca sermpe Handle(...) !!
+COME FUNZIONA CON NEXT/RETURN RESPONSE NELLA PIPELINE
+TransactionBehavior entra
+↓
+await next()
+    ↓
+    RUHandler.Handle()
+        AddAsync(user)
+        (NO SAVE)
+    ↑ ritorna
+↓
+SaveChangesAsync()   ← QUI
+↓
+response
+//quindi transactionbehavior(che lancierà EFunitofwork!) circonda exceptionbehavior che circonda a sua volta handler!! cipolla.
+ */
+
 //public sealed class RTHandler : IRTHandler
 public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
 
@@ -47,7 +80,8 @@ public sealed class RTHandler : IRequestHandler<RTCommand, RTResult>
 
         user.AddRefreshToken(
             newRefreshHash.Value,
-            DateTime.UtcNow.AddDays(30));
+            DateTime.UtcNow.AddDays(30)
+        );
 
         //await _uow.SaveChangesAsync(ct); ora lo faccio nel transactionbehavior.cs durante la risalita verso il controller.
 

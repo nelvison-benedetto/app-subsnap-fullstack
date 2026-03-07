@@ -6,7 +6,41 @@ using SubSnap.Application.UseCases.Auth.Login.Policies;
 
 namespace SubSnap.Application.UseCases.Auth.Login;
 
+/*
+ * quando fai nel usercontroller.cs
+await _mediator.Send(command) la pipeline (grazie a method Handle) è
+ Controller
+   ↓
+ValidationBehavior
+   ↓
+LoggingBehavior
+   ↓
+PerformanceBehavior
+   ↓
+TransactionBehavior
+   ↓
+ExceptionBehavior
+   ↓
+Handler
+//plugin MediatR costruisce dinamicamente la pipeline usando reflrection, quindi cerca sermpe Handle(...) !!
+COME FUNZIONA CON NEXT/RETURN RESPONSE NELLA PIPELINE
+TransactionBehavior entra
+↓
+await next()
+    ↓
+    RUHandler.Handle()
+        AddAsync(user)
+        (NO SAVE)
+    ↑ ritorna
+↓
+SaveChangesAsync()   ← QUI
+↓
+response
+//quindi transactionbehavior(che lancierà EFunitofwork!) circonda exceptionbehavior che circonda a sua volta handler!! cipolla.
+ */
+
 //public sealed class LoginHandler : ILoginHandler
+
 public sealed class LoginHandler : IRequestHandler<LoginCommand, LoginResult> //x plugin MediatR(validazione automatica!) (works w fluentvalidation) see validationbehaviour.cs  dependencyinjection.cs
 
 {
