@@ -16,7 +16,8 @@ public sealed class OutboxMessageConfiguration
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
-            .HasColumnName("id");
+            .HasColumnName("id")
+            .ValueGeneratedNever(); //!!, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
 
         builder.Property(x => x.Type)
             .HasColumnName("type")
@@ -27,10 +28,15 @@ public sealed class OutboxMessageConfiguration
             .HasColumnType("jsonb")
             .IsRequired();
 
+
         builder.Property(x => x.OccurredOnUtc)
-            .HasColumnName("occurredonutc");
+            .HasColumnName("occurredonutc")
+            .HasColumnType("timestamptz")  //non è (3), magari da cambiare sul db.
+            .IsRequired();
 
         builder.Property(x => x.ProcessedOnUtc)
-            .HasColumnName("processedonutc");
+            .HasColumnName("processedonutc")
+            .HasColumnType("timestamptz");  //non è (3), magari da cambiare sul db.
+
     }
 }

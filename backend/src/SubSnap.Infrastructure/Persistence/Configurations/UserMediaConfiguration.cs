@@ -20,11 +20,11 @@ public sealed class UserMediaConfiguration
                 id => id.Value,
                 value => new UserMediaId(value))
             .HasColumnType("uuid")
-            .ValueGeneratedNever();
+            .ValueGeneratedNever(); //!!, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
 
         builder.Property<Guid>("UserId")  //SHADOW FK
             .HasColumnName("userid")
-            .IsRequired();
+            .IsRequired();  //sempre required!!
 
         builder.Property(x => x.ObjectKey)
             .HasColumnName("objectkey")
@@ -39,7 +39,7 @@ public sealed class UserMediaConfiguration
 
         builder.Property(x => x.UploatedAt)
             .HasColumnName("uploadedat")
-            .HasColumnType("timestamptz(3)")
+            .HasColumnType("timestamptz")  //non è (3), magari da cambiare sul db.
             .IsRequired();
 
 

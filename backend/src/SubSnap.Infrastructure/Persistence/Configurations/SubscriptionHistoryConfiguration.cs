@@ -14,7 +14,8 @@ internal class SubscriptionHistoryConfiguration : IEntityTypeConfiguration<Subsc
 
         builder.Property(x => x.Id)
             .HasColumnName("id")
-            .HasColumnType("uuid");
+            .HasColumnType("uuid")
+            .ValueGeneratedNever(); //!!, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
 
         builder.Property(x => x.Action)
             .HasColumnName("action")
