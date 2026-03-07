@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SubSnap.Core.Domain.Entities;
+using SubSnap.Core.Domain.ValueObjects;
 
 namespace SubSnap.Infrastructure.Persistence.Configurations;
 
@@ -17,16 +18,20 @@ public sealed class UserMediaConfiguration
             .HasColumnName("id")
             .HasConversion(
                 id => id.Value,
-                v => new MediaId(v))
+                value => new UserMediaId(value))
             .HasColumnType("uuid")
             .ValueGeneratedNever();
 
-        builder.Property(x => x.UserId)
+        //builder.Property(x => x.UserId)
+        //    .HasColumnName("userid")
+        //    .HasConversion(
+        //        id => id.Value,
+        //        v => new UserId(v))
+        //    .HasColumnType("uuid")
+        //    .IsRequired();
+
+        builder.Property<Guid>("UserId")  //SHADOW FK
             .HasColumnName("userid")
-            .HasConversion(
-                id => id.Value,
-                v => new UserId(v))
-            .HasColumnType("uuid")
             .IsRequired();
 
         builder.Property(x => x.ObjectKey)
