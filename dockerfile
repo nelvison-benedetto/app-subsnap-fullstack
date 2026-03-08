@@ -14,10 +14,11 @@ WORKDIR /app  #la directory di lavoro diventa /app
 
 COPY --from=build /app/publish .  #/app/publish viene copiato in /app
 
-ENV ASPNETCORE_URLS=http://+:8080  #dice a asp.net core di ascoltare su tutte le interfaccie sulla porta 8080. '+' significa 0.0.0.0 cioe accessibilità da fuori.
+ENV ASPNETCORE_URLS=http://+:8080  #dice a asp.net core di ascoltare su tutte le interfaccie sulla porta 8080. '+' significa 0.0.0.0 cioe accessibilità da fuori!quindi non devi settre esplicitamente nel code program.cs  builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 EXPOSE 8080  #dice a docker che questa app usa la porta 8080!
 
 ENTRYPOINT ["dotnet", "MyPrj.API.dll"]  #questo è il comando che parte quando il container si avvia.
 
 #quindi quando deploy DEVI IMPOSTARE port: 8080, altrimenti il reverse proxy non trova l'api.
+
