@@ -25,4 +25,5 @@ public readonly struct SubscriptionHistoryId
     public static bool operator ==(SubscriptionHistoryId left, SubscriptionHistoryId right) => left.Equals(right);
     public static bool operator !=(SubscriptionHistoryId left, SubscriptionHistoryId right) => !(left == right);
 
+    public override int GetHashCode() => Value.GetHashCode(); //x warning CS0659, xk quando fai override di Equal è consigliato farlo anche x GetHashCode()
 }

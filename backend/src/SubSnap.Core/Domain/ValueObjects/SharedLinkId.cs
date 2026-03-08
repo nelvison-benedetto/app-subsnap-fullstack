@@ -19,4 +19,5 @@ public readonly struct SharedLinkId
     public static bool operator ==(SharedLinkId left, SharedLinkId right) => left.Equals(right);
     public static bool operator !=(SharedLinkId left, SharedLinkId right) => !(left == right);
 
+    public override int GetHashCode() => Value.GetHashCode(); //x warning CS0659, xk quando fai override di Equal è consigliato farlo anche x GetHashCode()
 }

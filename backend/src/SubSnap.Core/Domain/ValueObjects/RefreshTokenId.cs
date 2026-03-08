@@ -25,4 +25,5 @@ readonly struct RefreshTokenId
     public static bool operator ==(RefreshTokenId left, RefreshTokenId right) => left.Equals(right);
     public static bool operator !=(RefreshTokenId left, RefreshTokenId right) => !(left == right);
 
+    public override int GetHashCode() => Value.GetHashCode(); //x warning CS0659, xk quando fai override di Equal è consigliato farlo anche x GetHashCode()
 }

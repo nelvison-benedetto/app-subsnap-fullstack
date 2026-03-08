@@ -24,4 +24,6 @@ public readonly struct UserMediaId
     public override bool Equals(object? obj) => obj is UserMediaId other && Equals(other);
     public static bool operator ==(UserMediaId left, UserMediaId right) => left.Equals(right);
     public static bool operator !=(UserMediaId left, UserMediaId right) => !(left == right);
+
+    public override int GetHashCode() => Value.GetHashCode(); //x warning CS0659, xk quando fai override di Equal è consigliato farlo anche x GetHashCode()
 }

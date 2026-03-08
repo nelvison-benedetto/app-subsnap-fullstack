@@ -19,4 +19,5 @@ public readonly struct UserId  //è readonly struct
     public static bool operator ==(UserId left, UserId right) => left.Equals(right);
     public static bool operator != (UserId left, UserId right) => !(left == right);
 
+    public override int GetHashCode() => Value.GetHashCode(); //x warning CS0659, xk quando fai override di Equal è consigliato farlo anche x GetHashCode()
 }
