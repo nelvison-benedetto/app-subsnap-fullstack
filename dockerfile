@@ -1,24 +1,37 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build  
-  #usa image docker ufficiale 8.0
+# -------- BUILD STAGE --------
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build  #usa image docker ufficiale 8.0
+
 WORKDIR /src
-  #lavora dentro cartella src/
-COPY . .  #copia tutto dentro il suo container src/
 
-RUN dotnet restore src/MyPrj.API/MyPrj.API.csproj  #scarica i nuget packages
-RUN dotnet publish src/MyPrj.API/MyPrj.API.csproj -c Release -o /app/publish
-  #dotnet publish fa compila il prj->crea i files eseguibili -> copia le dipendenze.
-#.API è l'entrypoitn, non menzioni gli altri assemblies e.g. .Infrastrucure, perche intanto sono libraries c# (non hanno app.Run() !), cmnq anche gli altri assemblies(e.g. .Infrastructure) vengono compilati.
+# copia solo i file progetto per sfruttare il caching docker
+COPY src/SubSnap.API/SubSnap.API.csproj src/SubSnap.API/
+COPY src/SubSnap.Core/SubSnap.Core.csproj src/SubSnap.Core/
+COPY src/SubSnap.Infrastructure/SubSnap.Infrastructure.csproj src/SubSnap.Infrastructure/
+COPY src/SubSnap.Application/SubSnap.Application.csproj src/SubSnap.Application/
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0  #cambia image, per usare aspnet.core runtime che è molto piu leggero
-WORKDIR /app  #la directory di lavoro diventa /app
+RUN dotnet restore src/SubSnap.API/SubSnap.API.csproj
 
-COPY --from=build /app/publish .  #/app/publish viene copiato in /app
+# copia il resto del codice
+COPY . .
 
-ENV ASPNETCORE_URLS=http://+:8080  #dice a asp.net core di ascoltare su tutte le interfaccie sulla porta 8080. '+' significa 0.0.0.0 cioe accessibilità da fuori!quindi non devi settre esplicitamente nel code program.cs  builder.WebHost.UseUrls("http://0.0.0.0:8080");
+RUN dotnet publish src/SubSnap.API/SubSnap.API.csproj \
+    -c Release \
+    -o /app/publish \
+    /p:UseAppHost=false
+    #dotnet publish fa compila il prj->crea i files eseguibili -> copia le dipendenze.
 
-EXPOSE 8080  #dice a docker che questa app usa la porta 8080!
+# -------- RUNTIME STAGE --------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
-ENTRYPOINT ["dotnet", "MyPrj.API.dll"]  #questo è il comando che parte quando il container si avvia.
+WORKDIR /app
 
-#quindi quando deploy DEVI IMPOSTARE port: 8080, altrimenti il reverse proxy non trova l'api.
+COPY --from=build /app/publish .
+   #/app/publish viene copiato in /app
 
+# ASP.NET ascolta su tutte le interfacce
+ENV ASPNETCORE_URLS=http://+:8080
+  #dice a asp.net core di ascoltare su tutte le interfaccie sulla porta 8080. '+' significa 0.0.0.0 cioe accessibilità da fuori!quindi non devi settre esplicitamente nel code program.cs builder.WebHost.UseUrls("http://0.0.0.0:8080");
+EXPOSE 8080
+  #dice a docker che questa app usa la porta 8080!
+ENTRYPOINT ["dotnet", "SubSnap.API.dll"]
+  #questo è il comando che parte quando il container si avvia.
