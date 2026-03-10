@@ -8,6 +8,7 @@ using SubSnap.API.StartupExtensions.Validation;
 using SubSnap.Application.DependencyInjection;
 //using Microsoft.OpenApi.Models;
 using SubSnap.Infrastructure.DependencyInjection;
+using SubSnap.Infrastructure.Persistence.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,4 +48,11 @@ app.UseAuthorization();  //applica [Authorize]
 app.UseHealthChecksConfiguration();
 
 app.MapControllers();  //collega routing -> controller
+
+app.MapGet("/health/db", async (ApplicationDbContext db) =>
+{
+    await db.Database.CanConnectAsync();
+    return Results.Ok("DB OK");
+});
+
 app.Run();
