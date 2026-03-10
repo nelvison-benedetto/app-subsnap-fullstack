@@ -26,9 +26,14 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         _factory = factory;
     }
 
+    public async Task<UserFullAggregate?> LoadWithFull(UserId userId, CancellationToken ct = default)
+    {
+        
+    }
+
     public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions( UserId userId, CancellationToken ct = default)
     {
-        // context #1 → user
+        //!!context #1 → user
         await using var userContext =
             await _factory.CreateDbContextAsync(ct); //x nuovo db context isolato!!!
 
@@ -41,6 +46,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
 
         // PARALLEL CONTEXTS
         var subscriptionsTask = LoadSubscriptions(userId, ct); //return la lista di Subscription!
+        
         await Task.WhenAll( subscriptionsTask);  //run queries in parallelo!!
             //Thread A → context #1 → SELECT users ...
             //Thread B → context #2 → SELECT subscriptions...
@@ -49,6 +55,8 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         return new UserSubscriptionsAggregate( user, subscriptionsTask.Result); //costruzione aggregate, e lo restituisco!(questo obj non esiste nel db, è un runtime business projection)
     }
 
+
+    //---- Helpers
     private async Task<List<Subscription>> LoadSubscriptions( UserId userId, CancellationToken ct)
     {
         await using var context =
