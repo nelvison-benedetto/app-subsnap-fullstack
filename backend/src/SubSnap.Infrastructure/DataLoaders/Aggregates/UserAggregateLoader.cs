@@ -26,10 +26,10 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         _factory = factory;
     }
 
-    public async Task<UserFullAggregate?> LoadWithFull(UserId userId, CancellationToken ct = default)
-    {
+    //public async Task<UserFullAggregate?> LoadWithFull(UserId userId, CancellationToken ct = default)
+    //{
         
-    }
+    //}
 
     public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions( UserId userId, CancellationToken ct = default)
     {
