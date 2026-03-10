@@ -22,7 +22,10 @@ public sealed class UserMediaConfiguration
             .HasColumnType("uuid")
             .ValueGeneratedNever(); //!!, dice a EF di non aspettarsi che il db generei l'id(xk lo genero io nel Domain)
 
-        builder.Property<Guid>("UserId")  //SHADOW FK
+        builder.Property<UserId>("UserId")  //SHADOW FK (Value Object)
+            .HasConversion(
+                id => id.Value,
+                value => new UserId(value))
             .HasColumnName("userid")
             .IsRequired();  //sempre required!!
 
