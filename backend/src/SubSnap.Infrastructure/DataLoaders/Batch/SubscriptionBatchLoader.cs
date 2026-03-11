@@ -33,6 +33,7 @@ SELECT ... WHERE UserId IN (...)
 
 see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionbatchloader.cs  userrepository.cs  GUSHandler.cs(top!)
  */
+//this è fatto identico a come se usassi GraphQL DataLoader.top.
 
 public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
 {
