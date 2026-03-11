@@ -3,6 +3,7 @@ using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.Aggregates;
 using SubSnap.Core.Domain.Entities;
 using SubSnap.Core.Domain.ValueObjects;
+using SubSnap.Infrastructure.Caching;
 using SubSnap.Infrastructure.Persistence.Context;
 
 namespace SubSnap.Infrastructure.DataLoaders.Aggregates;
@@ -20,14 +21,24 @@ see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionba
 public sealed class SubscriptionAggregateLoader : ISubscriptionAggregateLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory; //x .WhenAll() cioe query in parallelo
+    private readonly QueryCache _cache;
 
-    public SubscriptionAggregateLoader(IDbContextFactory<ApplicationDbContext> factory)
+    public SubscriptionAggregateLoader(
+        IDbContextFactory<ApplicationDbContext> factory,
+        QueryCache cache
+    )
     {
         _factory = factory;
+        _cache = cache;
     }
 
     public async Task<SubscriptionSubscriptionHistoriesAggregate?> LoadWithSubscriptionHistoriesAsync(SubscriptionId subscriptionId, CancellationToken ct = default)
     {
+        var cacheKey = $"subscription-history:{subscriptionId.Value}";
+
+        if (_cache.TryGet<SubscriptionSubscriptionHistoriesAggregate>(cacheKey, out var cached))
+            return cached;
+
         await using var subscriptionsContext = await _factory.CreateDbContextAsync(ct);
         await using var subscriptionHistoriesContext = await _factory.CreateDbContextAsync(ct);
 
@@ -45,10 +56,14 @@ public sealed class SubscriptionAggregateLoader : ISubscriptionAggregateLoader
         if (subscriptionTask.Result == null)
             return null;
 
-        return new SubscriptionSubscriptionHistoriesAggregate(
+        var aggregate = new SubscriptionSubscriptionHistoriesAggregate(
             subscriptionTask.Result,
             subscriptionHistoriesTask.Result
         );
+
+        _cache.Set(cacheKey, aggregate);
+
+        return aggregate;
     }
 
 }

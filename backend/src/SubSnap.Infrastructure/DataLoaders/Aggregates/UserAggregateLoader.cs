@@ -61,13 +61,16 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
             .ToListAsync(ct);
 
         await Task.WhenAll(userTask, refreshTokensTask, sharedLinksTask);  //run queries in parallelo!!
-           //Thread A → context #1 → SELECT users ...
-           //Thread B → context #2 → SELECT refreshtokens...
-           //Thread C → context #3 → SELECT sharedlinks...
-           //db lavora meglio perche ha query piccole su threads diversi(in questo caso il db riceve 2 threads e li runna CONTEMPORANEAMENTE (PARALLELISMO)), non 1 mega join!!
+        //Thread A → context #1 → SELECT users ...
+        //Thread B → context #2 → SELECT refreshtokens...
+        //Thread C → context #3 → SELECT sharedlinks...
+        //db lavora meglio perche ha query piccole su threads diversi(in questo caso il db riceve 2 threads e li runna CONTEMPORANEAMENTE (PARALLELISMO)), non 1 mega join!!
 
         if (userTask.Result == null)
+        {
+            _cache.Set<UserFullAggregate?>(cacheKey, null);
             return null;
+        }
 
         var aggregate = new UserFullAggregate(
             userTask.Result,
@@ -82,6 +85,11 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
 
     public async Task<UserSharedLinksAggregate?> LoadWithSharedLinksAsync(UserId userId, CancellationToken ct = default)
     {
+        var cacheKey = $"user-sharedlinks:{userId.Value}";
+
+        if (_cache.TryGet<UserSharedLinksAggregate>(cacheKey, out var cached))
+            return cached;
+
         await using var userContext = await _factory.CreateDbContextAsync(ct);
         await using var linkContext = await _factory.CreateDbContextAsync(ct);
 
@@ -97,12 +105,19 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         await Task.WhenAll( userTask, sharedLinksTask );
 
         if (userTask.Result == null)
+        {
+            _cache.Set<UserSharedLinksAggregate?>(cacheKey, null);
             return null;
+        }
 
-        return new UserSharedLinksAggregate(
+        var aggregate = new UserSharedLinksAggregate(
             userTask.Result,
             sharedLinksTask.Result
         );
+
+        _cache.Set(cacheKey, aggregate);
+
+        return aggregate;
     }
 
 }
