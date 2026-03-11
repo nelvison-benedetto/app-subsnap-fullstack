@@ -1,5 +1,6 @@
 ﻿using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.ValueObjects;
+using SubSnap.Infrastructure.DataLoaders.Projections.Views;
 
 namespace SubSnap.Infrastructure.DataLoaders.Projections;
 
@@ -27,12 +28,15 @@ public class UserSubscriptionsProjectionLoader
 
         await Task.WhenAll(userTask, subsTask);
 
-        if (userTask.Result == null)
+        var userAggregate = userTask.Result;
+
+        if (userAggregate == null)
             return null;
 
         return new UserSubscriptionsProjectionView(
-            userTask.Result,
-            subsTask.Result);
+            userAggregate.User,
+            subsTask.Result
+        );
     }
 
 

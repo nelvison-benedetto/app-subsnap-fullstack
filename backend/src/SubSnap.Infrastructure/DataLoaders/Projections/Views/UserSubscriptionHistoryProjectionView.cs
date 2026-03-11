@@ -8,9 +8,7 @@ non va nel Domain, xk è un read models delle query!! non è un business aggrega
 public sealed class UserSubscriptionHistoryProjectionView
 {
     public User User { get; }
-
     public Subscription Subscription { get; }
-
     public IReadOnlyCollection<SubscriptionHistory> History { get; }
 
     public UserSubscriptionHistoryProjectionView(

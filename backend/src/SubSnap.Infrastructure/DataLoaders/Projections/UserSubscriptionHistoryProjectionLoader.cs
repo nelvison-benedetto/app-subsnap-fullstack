@@ -5,7 +5,7 @@ using SubSnap.Infrastructure.DataLoaders.Projections.Views;
 namespace SubSnap.Infrastructure.DataLoaders.Projections;
 
 //ogni xxxProjection.cs solitamente è solo x 1 solo caso d'uso. e.g.LoadDashboard() / LoadStats() / ect..
-//here combinazione 1 Aggregate Root + 1aggregate root solo perche serve recuperare un suo children!
+//here combinazione 1 Aggregate Root + 1aggregate root (solo perche serve recuperare un suo children) + 1 children di quel'ultimo aggregate root!
 public class UserSubscriptionHistoryProjectionLoader
 {
     private readonly IUserAggregateLoader _userLoader;
@@ -26,17 +26,21 @@ public class UserSubscriptionHistoryProjectionLoader
     {
         var userTask = _userLoader.LoadWithFullAsync(userId, ct);
 
-        var subscriptionTask =
-            _subscriptionLoader.LoadWithSubscriptionHistoriesAsync(subscriptionId, ct);
+        var subscriptionTask = _subscriptionLoader.LoadWithSubscriptionHistoriesAsync(subscriptionId, ct);
 
         await Task.WhenAll(userTask, subscriptionTask);
 
-        if (userTask.Result == null || subscriptionTask.Result == null)
+        var userAggregate = userTask.Result;
+        var subscriptionAggregate = subscriptionTask.Result;
+
+        if (userAggregate == null || subscriptionAggregate == null)
             return null;
 
         return new UserSubscriptionHistoryProjectionView(
-            userTask.Result,
-            subscriptionTask.Result);
+            userAggregate.User,
+            subscriptionAggregate.Subscription,
+            subscriptionAggregate.SubscriptionHistories
+        );
     }
 
 }
