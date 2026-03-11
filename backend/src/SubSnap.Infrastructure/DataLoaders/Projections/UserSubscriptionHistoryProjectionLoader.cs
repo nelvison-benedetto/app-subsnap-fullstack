@@ -1,5 +1,6 @@
 ﻿using SubSnap.Application.Ports.DataLoadersorQueries;
 using SubSnap.Core.Domain.ValueObjects;
+using SubSnap.Infrastructure.DataLoaders.Projections.Views;
 
 namespace SubSnap.Infrastructure.DataLoaders.Projections;
 
