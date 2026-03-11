@@ -5,7 +5,11 @@ namespace SubSnap.Application.Ports.DataLoadersorQueries;
 
 public interface IUserAggregateLoader
 {
+    Task<UserFullAggregate?> LoadWithFull(UserId userId, CancellationToken ct = default);
+    Task<UserSharedLinksAggregate> LoadWithSharedLinks(UserId userId, CancellationToken ct);
+
+
+    //wrong!! 2 aggregate roots
     Task<UserSubscriptionsAggregate?> LoadWithSubscriptions(UserId userId, CancellationToken ct = default);
-    //Task<List<Subscription>> LoadSubscriptions(UserId userId, CancellationToken ct);
 
 }

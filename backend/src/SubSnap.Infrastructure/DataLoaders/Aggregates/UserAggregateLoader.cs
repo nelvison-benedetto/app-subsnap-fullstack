@@ -18,7 +18,7 @@ see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionba
  */
 public sealed class UserAggregateLoader : IUserAggregateLoader
 {
-    private readonly IDbContextFactory<ApplicationDbContext> _factory; //x .WhenAll() cioe query in parallelo.
+    private readonly IDbContextFactory<ApplicationDbContext> _factory; //x .WhenAll() cioe query in parallelo
 
     public UserAggregateLoader(
         IDbContextFactory<ApplicationDbContext> factory)
@@ -86,6 +86,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
     }
 
 
+
     //wrong!! 2 agggregate roots!!
     public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions( UserId userId, CancellationToken ct = default)
     {
@@ -114,5 +115,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
                 EF.Property<Guid>(s, "UserId") == userId.Value)
             .ToListAsync(ct);
     }
+
+
     
 }

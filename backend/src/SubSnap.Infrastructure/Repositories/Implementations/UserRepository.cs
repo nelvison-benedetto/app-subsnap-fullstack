@@ -59,7 +59,7 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .FirstOrDefaultAsync(
                 u => u.Id == EF.Property<UserId>(token, "UserId"),  //legge la SHADOW KEY(la trovi nei xxxconfiguration e serve a legare le entitites e.g. subscriptions->user)!
-                                                                    //significa User.Id == RefreshToken.UserId solo che RefreshToken.UserId è la shadowkey
+                  //significa User.Id == RefreshToken.UserId solo che RefreshToken.UserId è la shadowkey
                 ct);
     }
 
