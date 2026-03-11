@@ -87,7 +87,7 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
 
 
 
-    //wrong!! 2 agggregate roots!!
+    //wrong!! 2 agggregate roots!! TO DELETE!!
     public async Task<UserSubscriptionsAggregate?> LoadWithSubscriptions( UserId userId, CancellationToken ct = default)
     {
         await using var context = await _factory.CreateDbContextAsync(ct); 
@@ -101,8 +101,6 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
         await Task.WhenAll( subscriptionsTask);  //run queries in parallelo!!
         return new UserSubscriptionsAggregate( user, subscriptionsTask.Result);
     }
-
-
     //---- Helpers ----
     private async Task<List<Subscription>> LoadSubscriptions( UserId userId, CancellationToken ct)
     {

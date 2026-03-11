@@ -87,7 +87,7 @@ public sealed class SubscriptionBatchLoader : ISubscriptionBatchLoader
 
         _ = Task.Run(ExecuteBatch);  //parte in background
     }
-
+    
     private async Task ExecuteBatch()
     {
         await Task.Delay(5); //aspetti 5ms, perche serve un po di tempo x raccogliere le req simultanee. e.g. t=0ms user1 t=1ms user2 t=3ms user3...
