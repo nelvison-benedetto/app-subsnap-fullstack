@@ -26,26 +26,27 @@ public sealed class SubscriptionAggregateLoader : ISubscriptionAggregateLoader
         _factory = factory;
     }
 
-    public async Task<SubscriptionSubscriptionHistoriesAggregate> LoadWithSubscriptionHistories(SubscriptionId subscriptionId, CancellationToken ct)
+    public async Task<SubscriptionSubscriptionHistoriesAggregate?> LoadWithSubscriptionHistories(SubscriptionId subscriptionId, CancellationToken ct = default)
     {
-        await using var context = await _factory.CreateDbContextAsync(ct);
+        await using var subscriptionsContext = await _factory.CreateDbContextAsync(ct);
+        await using var subscriptionHistoriesContext = await _factory.CreateDbContextAsync(ct);
 
-        var subscription = await context.Subscriptions
+        var subscriptionTask = subscriptionsContext.Subscriptions
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == subscriptionId, ct);
 
-        if (subscription == null) return null;
-
-        //parallel loads dei children targets
-        var subscriptionHistoriesTask = context.Set<SubscriptionHistory>()
+        var subscriptionHistoriesTask = subscriptionHistoriesContext.Set<SubscriptionHistory>()
             .AsNoTracking()
             .Where(sh => EF.Property<Guid>(sh, "SubscriptionId") == subscriptionId.Value)
             .ToListAsync(ct);
 
-        await Task.WhenAll(subscriptionHistoriesTask);
+        await Task.WhenAll(subscriptionTask, subscriptionHistoriesTask);
+
+        if (subscriptionTask.Result == null)
+            return null;
 
         return new SubscriptionSubscriptionHistoriesAggregate(
-            subscription,
+            subscriptionTask.Result,
             subscriptionHistoriesTask.Result
         );
     }

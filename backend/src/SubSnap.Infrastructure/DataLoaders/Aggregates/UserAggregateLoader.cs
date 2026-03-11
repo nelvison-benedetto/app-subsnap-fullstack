@@ -28,59 +28,62 @@ public sealed class UserAggregateLoader : IUserAggregateLoader
 
     public async Task<UserFullAggregate?> LoadWithFull(UserId userId, CancellationToken ct = default)
     {
-        //!!context #1 → user
-        await using var context = await _factory.CreateDbContextAsync(ct);
-        //x nuovo db context isolato!!!
+        await using var userContext = await _factory.CreateDbContextAsync(ct);
+        await using var refreshContext = await _factory.CreateDbContextAsync(ct);
+        await using var linkContext = await _factory.CreateDbContextAsync(ct);
 
-        var user = await context.Users
+        var userTask = userContext.Users  //senza 'await' here
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId, ct);
 
-        if (user == null) return null;
-
         //parallel loads dei childrens target
-        var refreshTokensTask = context.Set<RefreshToken>()
+        var refreshTokensTask = refreshContext.Set<RefreshToken>()
             .AsNoTracking()
             .Where(rt => EF.Property<Guid>(rt, "UserId") == userId.Value)
             .ToListAsync(ct);
 
-        var sharedLinksTask = context.Set<SharedLink>()
+        var sharedLinksTask = linkContext.Set<SharedLink>()
             .AsNoTracking()
             .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
             .ToListAsync(ct);
 
-        await Task.WhenAll(refreshTokensTask, sharedLinksTask);  //run queries in parallelo!!
-         //Thread A → context #1 → SELECT users ...
-         //Thread B → context #2 → SELECT subscriptions...
-         //db lavora meglio perche ha query piccole su threads diversi(in questo caso il db riceve 2 threads e li runna CONTEMPORANEAMENTE (PARALLELISMO)), non 1 mega join!!
+        await Task.WhenAll(userTask, refreshTokensTask, sharedLinksTask);  //run queries in parallelo!!
+           //Thread A → context #1 → SELECT users ...
+           //Thread B → context #2 → SELECT refreshtokens...
+           //Thread C → context #3 → SELECT sharedlinks...
+           //db lavora meglio perche ha query piccole su threads diversi(in questo caso il db riceve 2 threads e li runna CONTEMPORANEAMENTE (PARALLELISMO)), non 1 mega join!!
+
+        if (userTask.Result == null)
+            return null;
 
         return new UserFullAggregate(
-            user,
+            userTask.Result,
             refreshTokensTask.Result,
             sharedLinksTask.Result
         );  //costruzione aggregate, e lo restituisco!(questo obj non esiste nel db, è un runtime business projection)
     }
 
-    public async Task<UserSharedLinksAggregate> LoadWithSharedLinks(UserId userId, CancellationToken ct)
+    public async Task<UserSharedLinksAggregate?> LoadWithSharedLinks(UserId userId, CancellationToken ct)
     {
-        await using var context = await _factory.CreateDbContextAsync(ct);
+        await using var userContext = await _factory.CreateDbContextAsync(ct);
+        await using var linkContext = await _factory.CreateDbContextAsync(ct);
 
-        var user = await context.Users
+        var userTask = userContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId, ct);
 
-        if (user == null) return null;
-
-        //parallel loads dei childrens target
-        var sharedLinksTask = context.Set<SharedLink>()
+        var sharedLinksTask = linkContext.Set<SharedLink>()
             .AsNoTracking()
             .Where(sl => EF.Property<Guid>(sl, "UserId") == userId.Value)
             .ToListAsync(ct);
 
         await Task.WhenAll(sharedLinksTask);
 
+        if (userTask.Result == null)
+            return null;
+
         return new UserSharedLinksAggregate(
-            user,
+            userTask.Result,
             sharedLinksTask.Result
         );
     }
