@@ -17,11 +17,11 @@ namespace SubSnap.Infrastructure.DataLoaders.Aggregates;
 see  getuserswithsubscriptionshandler.cs  useraggregateloader.cs  subscriptionbatchloader.cs  userrepository.cs  GUSHandler.cs(top!)
  */
 // usa AutoMapper nel .API per e.g.UserAggregate → UserDashboardDTO e passare questo al client.
-public sealed class UserSubscriptionsLoader : ISubscriptionAggregateLoader
+public sealed class SubscriptionAggregateLoader : ISubscriptionAggregateLoader
 {
     private readonly IDbContextFactory<ApplicationDbContext> _factory; //x .WhenAll() cioe query in parallelo
 
-    public UserSubscriptionsLoader(IDbContextFactory<ApplicationDbContext> factory)
+    public SubscriptionAggregateLoader(IDbContextFactory<ApplicationDbContext> factory)
     {
         _factory = factory;
     }
