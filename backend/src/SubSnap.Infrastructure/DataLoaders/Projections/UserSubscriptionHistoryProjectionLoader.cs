@@ -4,7 +4,7 @@ using SubSnap.Infrastructure.DataLoaders.Projections.Views;
 
 namespace SubSnap.Infrastructure.DataLoaders.Projections;
 
-//ogni xxxProjection.cs solitamente è solo x 1 solo caso d'uso. e.g.LoadDashboard() / LoadStats() / ect..
+//ogni xxxProjectionLoader.cs solitamente è solo x 1 solo caso d'uso. e.g.LoadDashboard() / LoadStats() / ect..
 //here combinazione 1 Aggregate Root + 1aggregate root (solo perche serve recuperare un suo children) + 1 children di quel'ultimo aggregate root!
 public class UserSubscriptionHistoryProjectionLoader
 {
